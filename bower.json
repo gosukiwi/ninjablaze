@@ -1,0 +1,21 @@
+{
+  "name": "ninja-blaze",
+  "main": "index.js",
+  "version": "0.0.0",
+  "homepage": "https://github.com/gosukiwi/ninja-blaze",
+  "authors": [
+    "Federico Ramirez <fedekiller@gmail.com>"
+  ],
+  "description": "Ninja strategy game",
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

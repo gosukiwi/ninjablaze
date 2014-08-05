@@ -1,0 +1,27 @@
+doctype html
+html
+  head
+    title HI!
+
+    link(href='http://yui.yahooapis.com/pure/0.5.0/pure-min.css', 
+    rel='stylesheet')
+    link(href='assets/css/style.css', rel='stylesheet')
+  body
+    h1 Register
+
+    form(action='', method='post')
+      label(for='username')
+        span Username
+        input(type='text', placeholder='username', id='username', 
+        name='username')
+
+      label(for='password')
+        span Password
+        input(type='password', placeholder='password', id='password',
+        name='password')
+
+      label(for='email')
+        span Email
+        input(type='email', placeholder='email', id='email', name='email')
+
+      button(type='submit') Register

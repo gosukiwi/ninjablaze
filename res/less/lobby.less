@@ -1,0 +1,159 @@
+#lobby {
+  background: url('../img/minato-kebei.jpg') no-repeat 0 0;
+}
+
+.lobby-chat {
+  height: 100vh;
+  position: relative;
+  border-right: 1px solid black;
+  overflow: hidden;
+
+  h1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1500;
+    font-family: @font-main;
+    text-transform: uppercase;
+    padding: 0 10px;
+    margin: 0;
+    background-color: white;
+  }
+
+  ul {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    background-color: rgba(255, 255, 255, 0.8);
+    height: 90vh;
+    overflow: auto;
+    z-index: 1000;
+    border-bottom: 1px solid black;
+    padding-top: 40px;
+    box-sizing: border-box;
+
+    li {
+      color: #333;
+      font-family: @font-main;
+      padding: 10px;
+      border-bottom: 1px solid #E7E3E7;
+      font-size: 0.9em;
+    }
+
+    .username {
+      background-color: #5603B3;
+      color: white;
+      font-weight: bold;
+      font-size: 0.9em;
+      padding: 2px 5px;
+    }
+
+    .message {
+      display: block;
+      padding: 10px 10px 0;
+    }
+  }
+
+  textarea {
+    z-index: 500;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 10vh;
+    width: 100%;
+    border: none;
+    box-sizing: border-box;
+    font-family: @font-main;
+    color: #111;
+    padding: 3px;
+    font-size: 0.9em;
+  }
+}
+
+.lobby-info {
+  position: relative;
+  overflow: hidden;
+  height: 100vh;
+
+  h2 {
+    padding: 10px 10px 0;
+    margin: 0;
+    font-family: @font-main;
+  }
+
+  .buttons {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 140px;
+    background-color: white;
+    z-index: 1000;
+
+    .options {
+      padding: 0;
+      margin: 10px 0 0;
+      list-style: none;
+      text-align: center;
+
+      li {
+        display: inline-block;
+        padding: 0;
+        margin: 0;
+
+        a {
+          display: block;
+          text-decoration: none;
+          width: 120px;
+          height: 30px;
+          line-height: 30px;
+          border: 1px solid #DF3A04;
+          color: #DF3A04;
+          margin: 0 5px 5px 0;
+          font-family: @font-main;
+          font-size: 0.9em;
+          text-transform: lowercase;
+
+          &:hover {
+            background-color: #DF3A04;
+            color: white;
+          }
+        }
+      }
+    }
+  }
+
+  .online {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    overflow: auto;
+    height: 100vh;
+    padding-bottom: 140px;
+    box-sizing: border-box;
+    z-index: 500;
+
+    li {
+      color: #333;
+      font-family: @font-main;
+      padding: 10px;
+      border-bottom: 1px solid #E7E3E7;
+      font-size: 0.9em;
+
+      &:hover {
+        background-color: #f1f1f1;
+        cursor: pointer;
+      }
+    }
+  }
+}

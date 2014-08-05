@@ -1,0 +1,34 @@
+doctype html
+html
+  head
+    title Ninja Blaze Lobby
+
+    link(rel='stylesheet', href='http://yui.yahooapis.com/pure/0.5.0/pure-min.css')
+    link(rel='stylesheet', href='assets/css/style.css')
+  body
+    #lobby.pure-g
+      .pure-u-3-4
+        .lobby-chat
+          h1 Ninja Blaze Lobby
+
+          ul.chat
+
+          textarea
+      .pure-u-1-4.lobby-info
+        ul.online
+
+        .buttons
+          h2.selected-player No player selected
+
+          ul.options
+            li.btn-duel
+              a(href="javascript://") Duel Player
+            li.btn-profile
+              a(href="javascript://") View Profile
+            li.btn-add-friend
+              a(href="javascript://") Add Friend
+            li.btn-ignore
+              a(href="javascript://") Ignore
+
+    script(data-main='assets/js/lobby/main.js',
+    src='assets/vendor/requirejs/require.js')

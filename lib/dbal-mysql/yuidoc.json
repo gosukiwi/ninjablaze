@@ -1,0 +1,10 @@
+{
+  "name": "dbal-mysql",
+  "description": "A Database Abstraction Layer for MySQL and Node",
+  "version": "0.0.0",
+  "url": "https://github.com/gosukiwi",
+  "options": {
+    "paths": "./src",
+    "outdir": "./doc"
+  }
+}

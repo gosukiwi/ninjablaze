@@ -1,0 +1,35 @@
+extends ../base.jade
+
+block content
+  h1 Login
+
+  if(warn)
+    #alert-warning
+      p
+        | It seems you already are logged in as <strong>#{warn}</strong>, if you
+        | log in again you'll lose this session.
+
+  if(failed)
+    #alert-error
+      if(dbError)
+        p Oops! There has been an error with our database, please try again.
+      else
+        p 
+          | Oops! Could not find that username/password combination, don't have an
+          | account? <a href="/register">Register</a> in seconds.
+
+  form(action='', method='post')
+    label(for='username')
+      span Username
+      input(type='text', placeholder='username', id='username', 
+      name='username')
+
+    label(for='password')
+      span Password
+      input(type='password', placeholder='password', id='password',
+      name='password')
+
+    button(type='submit') Login
+
+  #alert-info
+    p Don't have an account? <a href="/register">Register</a> in seconds!
