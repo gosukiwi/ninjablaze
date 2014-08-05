@@ -50,6 +50,12 @@ function handleSocket(socket) {
     });
   });
 
+  socket.on('lobby/duel-request', function (players) {
+    // Get player2's socket and ask for a duel
+    var player_socket = logged_users[players.p2].socket;
+    player_socket.emit('lobby/ask-for-duel', players);
+  });
+
   socket.on('disconnect', function () {
     // For each of my users check who disconnected
     Object.keys(logged_users).every(function (key) {
