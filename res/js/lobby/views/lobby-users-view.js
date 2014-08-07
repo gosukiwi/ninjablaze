@@ -80,7 +80,7 @@ define(
       });
 
       socket.on('lobby/duel-declined', function (players) {
-        self.modal.modalContent(players.p2 + ' declined.');
+        self.modal.content(players.p2 + ' declined.');
         self.modal.prompt();
       });
     },
@@ -150,7 +150,7 @@ define(
 
     // Redirects two players to the duels page
     redirectToDuel: function (players) {
-      this.modal.modalContent('You are now beeing redirected');
+      this.modal.content('You are now beeing redirected');
       // TODO: Don't use absolute path!
       window.location = '/duel/' + players.p1 + '/vs/' + players.p2;
     }

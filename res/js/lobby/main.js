@@ -7,7 +7,7 @@ require.config({
     'underscore': '../../vendor/underscore/underscore',
     'io': '/socket.io/socket.io.js',
     'jquery-cookie': '../../vendor/jquery-cookie/jquery.cookie',
-    'backbone-modalview': '../../vendor/backbone-modalview/backbone.modalview'
+    'backbone-modalview': '../../vendor/backbone-modalview/js/backbone.modalview'
   }
 });
 
