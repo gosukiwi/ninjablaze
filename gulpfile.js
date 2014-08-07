@@ -9,7 +9,7 @@ var imagemin = require('gulp-imagemin');
 var paths = {
   less: 'res/less/**/*.less',
   lessMain: 'res/less/style.less',
-  scripts: 'res/js/**/*.js',
+  scripts: 'res/js/**/*',
   images: 'res/img/**/*',
   fonts: 'res/fonts/**/*',
   bower: 'bower_components/**/*',

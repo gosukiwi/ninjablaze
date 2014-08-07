@@ -1,0 +1,7 @@
+<h1><%= name %></h1>
+
+<div class="progress">
+  <span class="meter" style="width: <%= parseInt((currentHp * 100) / hp, 10) %>%"></span>
+</div>
+
+<span class="hp-info"><span id="current"><%= currentHp %></span>/<%= hp %></span>

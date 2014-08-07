@@ -56,6 +56,16 @@ function handleSocket(socket) {
     player_socket.emit('lobby/ask-for-duel', players);
   });
 
+  socket.on('lobby/duel-yes', function (players) {
+    var player_socket = logged_users[players.p1].socket;
+    player_socket.emit('lobby/duel-start', players);
+  });
+
+  socket.on('lobby/duel-no', function (players) {
+    var player_socket = logged_users[players.p1].socket;
+    player_socket.emit('lobby/duel-declined', players);
+  });
+
   socket.on('disconnect', function () {
     // For each of my users check who disconnected
     Object.keys(logged_users).every(function (key) {

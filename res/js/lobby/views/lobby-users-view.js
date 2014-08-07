@@ -24,7 +24,7 @@ define(
       // Duel-related stuff
       // ---------------------------------------------------------------------
       var self = this;
-      this.modal = new Backbone.ModalConfirmView({
+      this.modal = new Backbone.ModalPromptView({
         
         modalContent: 'Wanna duel bitchah BITCHA!?', 
 
@@ -74,6 +74,15 @@ define(
       socket.on('lobby/ask-for-duel', function (players) {
         self.trigger('duel-request', players.p1);
       });
+
+      socket.on('lobby/duel-start', function (players) {
+        self.redirectToDuel(players);
+      });
+
+      socket.on('lobby/duel-declined', function (players) {
+        self.modal.modalContent(players.p2 + ' declined.');
+        self.modal.prompt();
+      });
     },
 
     events: {
@@ -121,16 +130,29 @@ define(
     },
 
     promptForDuel: function (enemy) {
-      console.log('yo, ', enemy, ' wants to duel!');
-      this.modal.show();
+      var self = this;
+      this.modal.prompt(function (err) {
+        var players = {
+          p1: enemy,
+          p2: self.user.get('user')
+        };
+
+        self.modal.hide();
+
+        if(err) {
+          self.socket.emit('lobby/duel-no', players);
+        } else {
+          self.socket.emit('lobby/duel-yes', players);
+          self.redirectToDuel(players);
+        }
+      });
     },
 
-    acceptDuel: function () {
-      console.log('ACCEPT!');
-    },
-
-    denyDuel: function () {
-      console.log('Den!');
+    // Redirects two players to the duels page
+    redirectToDuel: function (players) {
+      this.modal.modalContent('You are now beeing redirected');
+      // TODO: Don't use absolute path!
+      window.location = '/duel/' + players.p1 + '/vs/' + players.p2;
     }
 
   });

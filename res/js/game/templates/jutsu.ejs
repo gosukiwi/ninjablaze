@@ -1,0 +1,8 @@
+<a href="javascript://">
+    <%= jutsu.name %>
+    <span class="badge-<%= jutsu.type %>">[<%= jutsu.type.substring(0, 1) %>]</span>
+
+    <% if(jutsu.element) { %>
+        <span class="badge-<%= jutsu.element %>">[<%= jutsu.element.substring(0, 1) %>]</span>
+    <% } %>
+</a>

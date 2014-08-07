@@ -1,0 +1,28 @@
+extends ../base.jade
+
+block content
+  .duel
+    .top-ui
+      .player-ui.pure-g
+        .pure-u-1-3
+          h1 Enemy
+
+          .progress
+            span.meter(style="width: 10%")
+        .pure-u-1-3.profile
+        .pure-u-1-3
+          h1 LVL 1
+
+      .bottom-ui
+        .player-ui.pure-g
+          #player-1-hp.pure-u-1-3
+          #info-panel.pure-u-1-3.info-panel
+            img.user-avatar(src="/assets/img/female-example.jpg")
+          .pure-u-1-3
+            h1 Fight
+            ul.jutsu-menu#jutsu-menu
+              li Loading...
+
+
+  script(src="/assets/vendor/requirejs/require.js"
+  data-main="/assets/js/game/main.js")

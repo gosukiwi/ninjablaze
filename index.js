@@ -35,6 +35,7 @@ app.use(dbal({
 // ---------------------------------------------------------------------------
 var user  = require('./routes/user');
 var lobby = require('./routes/lobby');
+var game  = require('./routes/game');
 
 app.get('/', function(req, res){
   res.render('index');
@@ -42,6 +43,9 @@ app.get('/', function(req, res){
 
 // Lobby Routes
 app.get('/lobby', lobby.index);
+
+// Game Routes
+app.get('/duel/:p1/vs/:p2', game.duel);
 
 // User routes
 app.get('/register', user.register);
