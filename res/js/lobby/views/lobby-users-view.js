@@ -1,5 +1,6 @@
 define(
-  ['io', 'backbone', 'collections/users', 'models/user', 'jquery-cookie'], 
+  ['io', 'backbone', 'collections/users', 'models/user', 'backbone-modalview',  
+   'jquery-cookie'], 
   function (io, Backbone, UsersCollection, User) {
 
   'use strict';
@@ -7,15 +8,39 @@ define(
   return Backbone.View.extend({
 
     initialize: function (options) {
+
+      // Online users
+      // ---------------------------------------------------------------------
       this.collection = new UsersCollection();
       this.listenTo(this.collection, 'remove', this.onUserDC);
       this.listenTo(this.collection, 'add', this.onNewUser);
 
+      // Current user
+      // ---------------------------------------------------------------------
       this.selected = new User({ user: null });
       this.user = options.user;
       this.listenTo(this.selected, 'change', this.onSelectedChanged);
 
+      // Duel-related stuff
+      // ---------------------------------------------------------------------
+      var self = this;
+      this.modal = new Backbone.ModalConfirmView({
+        
+        modalContent: 'Wanna duel bitchah BITCHA!?', 
+
+        onButtonPressed: function (button) {
+          if(button.data('name') === 'OK') {
+            self.trigger('duel-yes');
+          } else {
+            self.trigger('duel-no');
+          }
+        }
+
+      });
+
       this.on('duel-request', this.promptForDuel);
+      this.on('duel-yes', this.acceptDuel);
+      this.on('duel-no', this.denyDuel);
     },
 
     bindSocket: function (socket) {
@@ -97,6 +122,15 @@ define(
 
     promptForDuel: function (enemy) {
       console.log('yo, ', enemy, ' wants to duel!');
+      this.modal.show();
+    },
+
+    acceptDuel: function () {
+      console.log('ACCEPT!');
+    },
+
+    denyDuel: function () {
+      console.log('Den!');
     }
 
   });
