@@ -4,6 +4,12 @@
 
 'use strict';
 
+var express = require('express');
+var router = new express.Router();
+
+// Helper functions
+// ---------------------------------------------------------------------------
+
 // Logs in an user using the request object
 function login_user(user, req, res) {
   var db      = req.db;
@@ -27,11 +33,14 @@ function logout_user(req, res) {
   }
 }
 
-exports.register = function (req, res) {
-  res.render('user/register');
-};
+// Route definitions
+// ---------------------------------------------------------------------------
 
-exports.register_action = function (req, res) {
+router.get('/register', function (req, res) {
+  res.render('user/register');
+});
+
+router.post('/register', function (req, res) {
   var params  = req.body;
   var db      = req.db;
 
@@ -60,9 +69,9 @@ exports.register_action = function (req, res) {
       });
     });
   });
-};
+});
 
-exports.login = function (req, res) {
+router.get('/login', function (req, res) {
   var user = req.session.user;
   if(user) {
     res.render('user/login', { warn: user.user });
@@ -70,9 +79,9 @@ exports.login = function (req, res) {
   }
 
   res.render('user/login');
-};
+});
 
-exports.login_action = function (req, res) {
+router.post('/login', function (req, res) {
   var params  = req.body;
   var db      = req.db;
 
@@ -103,9 +112,11 @@ exports.login_action = function (req, res) {
     console.log('db error finding user: ', err);
     res.render('user/login', { failed: true, dbError: true });
   });
-};
+});
 
-exports.logout = function (req, res) {
+router.get('/logout', function (req, res) {
   logout_user(req, res);
   res.redirect('/login');
-};
+});
+
+module.exports = router;

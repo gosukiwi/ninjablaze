@@ -2,13 +2,15 @@
 /**
  * Draws and updates a player's HP bar
  */
-define(['backbone', 'underscore', 'text!templates/hp.ejs', 'state'], 
-    function(Backbone, _, hpTemplate, state) {
+define(['backbone', 'underscore', 'text!templates/hp.ejs'], 
+    function(Backbone, _, hpTemplate) {
 
   'use strict';
 
   return Backbone.View.extend({
-    initialize: function () {
+
+    initialize: function (options) {
+      this.model = new Backbone.Model(options.model);
       this.listenTo(this.model, 'change:currentHp', this.update);
     },
 
@@ -16,7 +18,6 @@ define(['backbone', 'underscore', 'text!templates/hp.ejs', 'state'],
 
     render: function () {
       this.$el.html(this.template(this.model.toJSON()));
-
       return this;
     },
 
@@ -25,16 +26,10 @@ define(['backbone', 'underscore', 'text!templates/hp.ejs', 'state'],
       var total = this.model.get('hp');
       var perc = parseInt(curr * 100 / total, 10);
 
-      this.$el.find('.meter').animate({'width': perc + '%'});
+      this.$el.find('.meter').animate({ 'width': perc + '%' });
       this.$el.find('#current').text(curr);
-    },
-
-    events: {
-      // clicking on a jutsu
-      'click a': function () {
-        state.set('currentJutsu', this.model);
-      }
     }
+
   });
 
 });

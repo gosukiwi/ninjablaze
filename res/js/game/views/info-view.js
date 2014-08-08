@@ -9,20 +9,29 @@ define(['backbone', 'underscore', 'text!templates/info.ejs', 'state'],
 
   return Backbone.View.extend({
 
-    initialize: function () {
-      this.listenTo(state, 'change:currentJutsu', this.render);
+    initialize: function (options) {
+      this.manager = options.manager;
+      //this.listenTo(state, 'change:currentJutsu', this.render);
+      this.jutsu = null;
+
+      // TODO: Proxy self in manager.on
+      var self = this;
+      this.manager.on('select-jutsu', function (jutsu) {
+        self.updateJutsu(jutsu);
+      });
+    },
+
+    updateJutsu: function (jutsu) {
+      this.jutsu = jutsu;
+      this.render();
     },
 
     template: _.template(infoTemplate),
 
     render: function () {
-      var currJutsu = state.get('currentJutsu');
-
       this.$el.html(this.template({
-        jutsu: currJutsu
+        jutsu: this.jutsu
       }));
-
-      return this;
     },
 
     events: {
@@ -31,7 +40,8 @@ define(['backbone', 'underscore', 'text!templates/info.ejs', 'state'],
       },
 
       'click .cancel': function () {
-        state.set('currentJutsu', null);
+        //state.set('currentJutsu', null);
+        this.updateJutsu(null);
       }
     }
 

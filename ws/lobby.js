@@ -1,15 +1,8 @@
 'use strict';
 
-var Dbal = require('../lib/dbal-mysql/src/db');
-var db = new Dbal({
-  host: 'localhost',
-  user: 'root',
-  password: 'root',
-  database: 'ninjablaze'
-});
 var logged_users = {};
 
-function handleSocket(socket) {
+function handleSocket(socket, db) {
   socket.on('lobby/msg', function (msg) {
     if(msg && msg.msg) {
       socket.broadcast.emit('lobby/new-msg', msg);
@@ -50,17 +43,37 @@ function handleSocket(socket) {
     });
   });
 
+  // Player 1 sends a duel request
   socket.on('lobby/duel-request', function (players) {
     // Get player2's socket and ask for a duel
     var player_socket = logged_users[players.p2].socket;
     player_socket.emit('lobby/ask-for-duel', players);
   });
 
+  // Player 2 accepted the duel request.
   socket.on('lobby/duel-yes', function (players) {
-    var player_socket = logged_users[players.p1].socket;
-    player_socket.emit('lobby/duel-start', players);
+    var p1        = logged_users[players.p1];
+    var p2        = logged_users[players.p2];
+    var p1_socket = p1.socket;
+    var p1_id     = p1.user.id;
+    var p2_id     = p2.user.id;
+
+    db.table('duels').insert({
+      'player1': p1_id,
+      'player2': p2_id,
+      'state': 'beeing-created',
+      'winner': 0
+    }).then(function (res) {
+      socket.emit('lobby/duel-start', players, res.insertId);
+      p1_socket.emit('lobby/duel-start', players, res.insertId);
+    }, function (err) {
+      // Emit a DB error to both players
+      socket.emit('lobby/duel-db-error', err);
+      p1_socket.emit('lobby/duel-db-error', err);
+    });
   });
 
+  // Player 2 declined the duel request
   socket.on('lobby/duel-no', function (players) {
     var player_socket = logged_users[players.p1].socket;
     player_socket.emit('lobby/duel-declined', players);
@@ -83,7 +96,4 @@ function handleSocket(socket) {
   });
 }
 
-module.exports = function(http) {
-  var io = require('socket.io')(http);
-  io.on('connection', handleSocket);
-};
+module.exports = handleSocket;

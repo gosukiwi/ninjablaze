@@ -75,12 +75,17 @@ define(
         self.trigger('duel-request', players.p1);
       });
 
-      socket.on('lobby/duel-start', function (players) {
-        self.redirectToDuel(players);
+      socket.on('lobby/duel-start', function (players, roomId) {
+        self.redirectToDuel(roomId);
       });
 
       socket.on('lobby/duel-declined', function (players) {
         self.modal.content(players.p2 + ' declined.');
+        self.modal.prompt();
+      });
+
+      socket.on('lobby/duel-db-error', function () {
+        self.modal.content('There has been an error with the database, please try again in a little while.');
         self.modal.prompt();
       });
     },
@@ -143,16 +148,16 @@ define(
           self.socket.emit('lobby/duel-no', players);
         } else {
           self.socket.emit('lobby/duel-yes', players);
-          self.redirectToDuel(players);
         }
       });
     },
 
     // Redirects two players to the duels page
-    redirectToDuel: function (players) {
+    redirectToDuel: function (roomId) {
+      console.log(roomId);
       this.modal.content('You are now beeing redirected');
       // TODO: Don't use absolute path!
-      window.location = '/duel/' + players.p1 + '/vs/' + players.p2;
+      window.location = '/duel/' + roomId;
     }
 
   });

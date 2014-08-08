@@ -33,31 +33,25 @@ app.use(dbal({
 
 // Routes
 // ---------------------------------------------------------------------------
-var user  = require('./routes/user');
-var lobby = require('./routes/lobby');
-var game  = require('./routes/game');
+var userRouter  = require('./routes/user');
+var lobbyRouter = require('./routes/lobby');
+var gameRouter  = require('./routes/game');
 
 app.get('/', function(req, res){
   res.render('index');
 });
 
 // Lobby Routes
-app.get('/lobby', lobby.index);
-
+app.use('/', lobbyRouter);
 // Game Routes
-app.get('/duel/:p1/vs/:p2', game.duel);
-
+app.use('/', gameRouter);
 // User routes
-app.get('/register', user.register);
-app.post('/register', user.register_action);
-app.get('/login', user.login);
-app.post('/login', user.login_action);
-app.get('/logout', user.logout);
-
+app.use('/', userRouter);
 
 // Websockets
+// Eventually they could go into their own node instance if needed.
 // ---------------------------------------------------------------------------
-require('./ws/lobby.js')(http);
+require('./ws/index')(http);
 
 // Start server on port 3000
 // ---------------------------------------------------------------------------
