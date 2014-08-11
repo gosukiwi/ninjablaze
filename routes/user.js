@@ -119,4 +119,55 @@ router.get('/logout', function (req, res) {
   res.redirect('/login');
 });
 
+router.get('/users/:id', function (req, res) {
+  var id = req.params.id;
+  res.json({
+    'id': id,
+    'name': 'gosukiwi',
+    'str': 10,
+    'agi': 10,
+    'int': 10,
+    'chakraNature': 'water',
+    'hp': 2500,
+    'currentHp': 1600,
+    'level': 10,
+
+    // The enabled jutsus for this user, all users have lots of jutsus but
+    // they can only choose four when dueling.
+    'jutsus': [
+      {
+        name: 'Gokakyou no jutsu',
+        damage: 200,
+        element: 'fire',
+        type: 'ninjutsu',
+        description: 'Some desc...'
+
+      },
+      {
+        name: 'Replacemente jutsu',
+        damage: 200,
+        element: 0,
+        type: 'ninjutsu',
+        description: 'Some desc...'
+
+      },
+      {
+        name: 'Throw Kunai',
+        damage: 200,
+        element: 0,
+        type: 'taijutsu',
+        description: 'Some desc...'
+
+      },
+      {
+        name: 'Body Flicker',
+        damage: 200,
+        element: 0,
+        type: 'ninjutsu',
+        description: 'Some desc...'
+      }
+    ]
+  });
+});
+
 module.exports = router;

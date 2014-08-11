@@ -19,6 +19,7 @@ define(['io', 'jquery-cookie'], function (io) {
       // Save the pubsub instance, we use this to communicate with the Backbone
       // views
       this.pubsub = pubsub;
+      this.subscribe();
 
       // Bind all socket events in this.socketEvents
       var self = this;
@@ -32,6 +33,12 @@ define(['io', 'jquery-cookie'], function (io) {
         id: roomId,
         player1: p1,
         player2: p2
+      });
+    },
+
+    subscribe: function () {
+      this.pubsub.on('attack', function (jutsu) {
+        console.log('User wants to attack with', jutsu);
       });
     },
 

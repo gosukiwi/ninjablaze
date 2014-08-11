@@ -1,17 +1,25 @@
 define(['backbone', 'underscore'], function(Backbone, _) {
   'use strict';
 
-  var RegionManager = function() {
+  var Layout = function() {
     this.regions = [];
   };
 
-  RegionManager.prototype = _.extend(RegionManager.prototype, 
+  Layout.prototype = _.extend(Layout.prototype, 
   // Public methods
   {
     
-    // Add a view to the manager
+    // Add a view to the layout
     add: function (View, options) {
-      options = _.extend({ manager: this }, options);
+      var self = this;
+      var constructor = View.prototype.initialize;
+      if(_.isFunction(constructor)) {
+        View.prototype.initialize = function () {
+          this.layout = self;
+          constructor.apply(this, arguments);
+        };
+      }
+
       var view = new View(options);
       this.regions.push(view);
     },
@@ -26,14 +34,7 @@ define(['backbone', 'underscore'], function(Backbone, _) {
 
   }, 
   // Also extend from Backbone.Events so we make this object a Mediator/PubSub
-  // Views can then do
-  //
-  //   this.manager.trigger('something-happened');
-  //
-  // And
-  //
-  //   this.manager.on('something-else', this.doSomething);
   Backbone.Events);
 
-  return RegionManager;
+  return Layout;
 });

@@ -1,4 +1,6 @@
-/* global define */
+/**
+ * The menu of all jutsus
+ */
 define(['backbone', 'underscore', 'views/jutsu-menu-item-view'], 
     function(Backbone, _, JutsuMenuItemView) {
 
@@ -6,16 +8,11 @@ define(['backbone', 'underscore', 'views/jutsu-menu-item-view'],
 
   return Backbone.View.extend({
 
-    initialize: function (options) {
-      this.manager = options.manager;
-    },
-
     render: function () {
       var self = this;
-
       self.$el.empty();
-      _.each(this.model, function (jutsu) {
-        var view = new JutsuMenuItemView({ model: jutsu, manager: self.manager });
+      this.collection.each(function (jutsu) {
+        var view = new JutsuMenuItemView({ model: jutsu, layout: self.layout });
         self.$el.append(view.render().el);
       });
     }

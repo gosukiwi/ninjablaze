@@ -1,12 +1,24 @@
-/* global define */
 /**
  * The current player of the game... "Player 1"
  */
-define(['jquery', 'backbone'], function ($, Backbone) {
+define(['jquery', 'backbone', 'collections/jutsus'], function ($, Backbone, Jutsus) {
   'use strict';
 
   return Backbone.Model.extend({
+
+    initialize: function () {
+      // If jutsus are defined, "cast" them to a Jutsus collection
+      var jutsus = this.get('jutsus');
+      if(jutsus) {
+        this.jutsus = new Jutsus(jutsus);
+        this.unset('jutsus');
+      }
+    },
+
+    urlRoot: '/users',
+
     defaults: {
+      'id': 0,
       'name': 'gosukiwi',
       'str': 10,
       'agi': 10,
@@ -52,5 +64,6 @@ define(['jquery', 'backbone'], function ($, Backbone) {
         }
       ]
     }
+
   });
 });

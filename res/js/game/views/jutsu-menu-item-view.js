@@ -1,13 +1,12 @@
-/* global define */
-define(['backbone', 'underscore', 'text!templates/jutsu.ejs', 'views/info-view', 
-    'state'], function(Backbone, _, jutsuMenuTemplate/*, InfoView*/) {
+define(['backbone', 'underscore', 'text!templates/jutsu.ejs'], 
+    function(Backbone, _, jutsuMenuTemplate) {
 
   'use strict';
 
   return Backbone.View.extend({
 
     initialize: function (options) {
-      this.manager = options.manager;
+      this.layout = options.layout;
     },
 
     tagName: 'li',
@@ -16,7 +15,7 @@ define(['backbone', 'underscore', 'text!templates/jutsu.ejs', 'views/info-view',
 
     render: function () {
       this.$el.html(this.template({
-        jutsu: this.model
+        jutsu: this.model.toJSON()
       }));
 
       return this;
@@ -25,7 +24,7 @@ define(['backbone', 'underscore', 'text!templates/jutsu.ejs', 'views/info-view',
     events: {
       // clicking on a jutsu
       'click a': function () {
-        this.manager.trigger('select-jutsu', this.model);
+        this.layout.trigger('select-jutsu', this.model);
       }
     }
 

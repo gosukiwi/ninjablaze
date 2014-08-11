@@ -1,10 +1,11 @@
-/* global define */
 /**
  * Main game application, two players battle it out!
  */
-define(['jquery', 'backbone', 'underscore', 'views/user-ui-view', 'ws', 'helpers/region-manager',
-        'views/jutsu-menu-view', 'views/hp-view', 'views/info-view'], 
-    function ($, Backbone, _, UserUIView, ws, RegionManager, JutsuMenuView, HPView, InfoView) {
+define(['jquery', 'backbone', 'underscore', 'ws', 'helpers/layout',
+        'views/jutsu-menu-view', 'views/hp-view', 'views/jutsu-view',
+        'models/user'], 
+    function ($, Backbone, _, ws, Layout, JutsuMenuView, HPView, 
+      JutsuView, User) {
 
   'use strict';
 
@@ -16,60 +17,34 @@ define(['jquery', 'backbone', 'underscore', 'views/user-ui-view', 'ws', 'helpers
       // Initialize web sockets
       ws.initialize(pubsub);
 
-      // Regions
-      var manager = new RegionManager();
-      manager.add(InfoView, { el: '#info-panel' });
-      manager.add(JutsuMenuView, {
+      // Get current user
+      var user = new User({ id: 1 });
+      user.fetch();
+
+      // Layout definition
+      var layout = new Layout();
+
+      layout.add(JutsuView, { 
+        el: '#info-panel',
+        model: new Backbone.Model({})
+      });
+
+      layout.add(JutsuMenuView, {
         el: '#jutsu-menu',
-        // TODO: This should be a collection
-        model: [
-          {
-            name: 'Gokakyou no jutsu',
-            damage: 200,
-            element: 'fire',
-            type: 'ninjutsu',
-            description: 'Some desc...'
-
-          },
-          {
-            name: 'Replacemente jutsu',
-            damage: 200,
-            element: 0,
-            type: 'ninjutsu',
-            description: 'Some desc...'
-          },
-          {
-            name: 'Throw Kunai',
-            damage: 200,
-            element: 0,
-            type: 'taijutsu',
-            description: 'Some desc...'
-          },
-          {
-            name: 'Body Flicker',
-            damage: 200,
-            element: 0,
-            type: 'ninjutsu',
-            description: 'Some desc...'
-          }
-        ]
+        collection: user.jutsus
       });
 
-      manager.add(HPView, {
+      layout.add(HPView, {
         el: '#player-1-hp',
-        model: {
-          'name': 'gosukiwi',
-          'str': 10,
-          'agi': 10,
-          'int': 10,
-          'chakranature': 'water',
-          'hp': 2500,
-          'currentHp': 1600,
-          'level': 10,
-        }      
+        model: user
       });
 
-      manager.render();
+      layout.render();
+
+      // Communicate between layout and web sockets
+      layout.on('attack', function (jutsu) {
+        pubsub.trigger('attack', jutsu);
+      });
     }
 
   };

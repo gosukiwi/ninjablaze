@@ -1,4 +1,3 @@
-/* global define */
 /**
  * Current game state
  */

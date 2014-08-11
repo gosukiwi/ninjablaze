@@ -1,4 +1,3 @@
-/* global define */
 /**
  * Draws and updates a player's HP bar
  */
@@ -9,8 +8,7 @@ define(['backbone', 'underscore', 'text!templates/hp.ejs'],
 
   return Backbone.View.extend({
 
-    initialize: function (options) {
-      this.model = new Backbone.Model(options.model);
+    initialize: function () {
       this.listenTo(this.model, 'change:currentHp', this.update);
     },
 
