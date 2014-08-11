@@ -43,7 +43,13 @@ function handleSocket(socket, db) {
         };
       }
 
-      // Both players are ready, start game!
+      // Send a message to the player that he logged successfully
+      socket.emit('game/logged', {
+        user: res.user,
+        id: res.id
+      });
+
+      // If both players are ready, start game!
       if(room.p1Ready && room.p2Ready) {
         console.log('begin game');
         var playerInfo = {

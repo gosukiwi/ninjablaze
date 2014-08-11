@@ -5,10 +5,10 @@ define(['io', 'jquery-cookie'], function (io) {
   'use strict';
 
   // Read data from the duel page markup
-  var $duelData = $('.duel');
-  var roomId = $duelData.data('id');
-  var p1 = $duelData.data('p1');
-  var p2 = $duelData.data('p2');
+  var $duelContainer = $('.duel');
+  var roomId = $duelContainer.data('id');
+  var p1 = $duelContainer.data('p1');
+  var p2 = $duelContainer.data('p2');
 
   // Read the token from our cookie, the browser would have redirected by
   // now if the cookie was empty
@@ -37,7 +37,7 @@ define(['io', 'jquery-cookie'], function (io) {
     },
 
     subscribe: function () {
-      this.pubsub.on('attack', function (jutsu) {
+      this.pubsub.on('ws/attack', function (jutsu) {
         console.log('User wants to attack with', jutsu);
       });
     },
@@ -45,6 +45,13 @@ define(['io', 'jquery-cookie'], function (io) {
     // Handle all socket events
     socketEvents: function (socket) {
       var self = this;
+
+      // The server acknowledged this user token and sent us the user info
+      socket.on('game/logged', function (userinfo) {
+        self.pubsub.trigger('logged', userinfo);
+      });
+
+      // The game can begin!
       socket.on('game/begin', function (players) {
         self.pubsub.trigger('begin', players);
       });

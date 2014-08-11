@@ -160,10 +160,10 @@ router.get('/users/:id', function (req, res) {
 
       },
       {
-        name: 'Body Flicker',
+        name: 'Potato no jutsu',
         damage: 200,
         element: 0,
-        type: 'ninjutsu',
+        type: 'genjutsu',
         description: 'Some desc...'
       }
     ]

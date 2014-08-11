@@ -9,41 +9,51 @@ define(['jquery', 'backbone', 'underscore', 'ws', 'helpers/layout',
 
   'use strict';
 
-  var pubsub = _.extend({}, Backbone.Events);
-
   return {
 
-    Initialize: function () {
-      // Initialize web sockets
-      WS.initialize(pubsub);
-
-      // Get current user
-      var user = new User({ id: 1 });
-      user.fetch();
-
+    initialize: function () {
       // Layout definition
-      var layout = new Layout();
+      this.layout = new Layout();
+      var self = this;
 
-      layout.add(JutsuView, { 
-        el: '#info-panel',
-        model: new Backbone.Model({})
+      // Events
+      this.layout.on('logged', function (userdata) {
+        // Once the user is logged and we get the user data, we can render the
+        // jutsus and all related views
+        self.renderViews(userdata);
       });
-
-      layout.add(JutsuMenuView, {
-        el: '#jutsu-menu',
-        collection: user.jutsus
-      });
-
-      layout.add(HPView, {
-        el: '#player-1-hp',
-        model: user
-      });
-
-      layout.render();
 
       // Communicate between layout and web sockets
-      layout.on('attack', function (jutsu) {
-        pubsub.trigger('attack', jutsu);
+      this.layout.on('attack', function (jutsu) {
+        self.layout.trigger('ws/attack', jutsu);
+      });
+
+      // Initialize web sockets, pass the layout as argument for the pubsub
+      // implementation.
+      WS.initialize(this.layout);
+    },
+
+    renderViews: function (userdata) {
+      // Get current user and render all the views for that user
+      var user = new User({ id: userdata.id });
+      var self = this;
+      user.fetch().then(function () {
+        self.layout.add(JutsuView, { 
+          el: '#info-panel',
+          model: new Backbone.Model({})
+        });
+
+        self.layout.add(JutsuMenuView, {
+          el: '#jutsu-menu',
+          collection: user.jutsus
+        });
+
+        self.layout.add(HPView, {
+          el: '#player-1-hp',
+          model: user
+        });
+
+        self.layout.render();
       });
     }
 
