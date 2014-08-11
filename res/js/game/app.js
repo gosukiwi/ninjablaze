@@ -4,7 +4,7 @@
 define(['jquery', 'backbone', 'underscore', 'ws', 'helpers/layout',
         'views/jutsu-menu-view', 'views/hp-view', 'views/jutsu-view',
         'models/user'], 
-    function ($, Backbone, _, ws, Layout, JutsuMenuView, HPView, 
+    function ($, Backbone, _, WS, Layout, JutsuMenuView, HPView, 
       JutsuView, User) {
 
   'use strict';
@@ -15,7 +15,7 @@ define(['jquery', 'backbone', 'underscore', 'ws', 'helpers/layout',
 
     Initialize: function () {
       // Initialize web sockets
-      ws.initialize(pubsub);
+      WS.initialize(pubsub);
 
       // Get current user
       var user = new User({ id: 1 });
