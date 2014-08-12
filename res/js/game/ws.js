@@ -37,8 +37,17 @@ define(['io', 'jquery-cookie'], function (io) {
     },
 
     subscribe: function () {
+      var self = this;
+
+      // When the application loads the current user info, subscribe to that
+      // event and save the user data.
+      this.pubsub.on('ws/user-loaded', function (user) {
+        self.user = user;
+      });
+
+      // The user wants to attack! Emit a socket event
       this.pubsub.on('ws/attack', function (jutsu) {
-        console.log('User wants to attack with', jutsu);
+        self.socket.emit('game/attack', jutsu.toJSON(), roomId, self.user.toJSON());
       });
     },
 
@@ -51,9 +60,10 @@ define(['io', 'jquery-cookie'], function (io) {
         self.pubsub.trigger('logged', userinfo);
       });
 
-      // The game can begin!
-      socket.on('game/begin', function (players) {
-        self.pubsub.trigger('begin', players);
+      // The game can begin! players is a pojo with both players, and turn is
+      // either the string 'p1' or 'p2'.
+      socket.on('game/begin', function (userinfo, players, turn) {
+        self.pubsub.trigger('begin', userinfo, players, turn);
       });
     }
   };
