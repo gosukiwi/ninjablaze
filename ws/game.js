@@ -1,7 +1,8 @@
 'use strict';
 
+var mechanics = require('../helpers/game-mechanics');
 // Duels going on right now
-var duels = {};
+var duels     = {};
 
 function handleSocket(socket, db) {
   // A player is ready to start, build the room for the duel.
@@ -66,17 +67,22 @@ function handleSocket(socket, db) {
   socket.on('game/attack', function (jutsu, roomId, player) {
     var room = duels[roomId];
     if(!room) {
+      // TODO: Send no room error and respond in frontend
       console.log('room not found');
       return;
     }
 
     // Check if it's in the correct turn, cast both values to integers
     if((+room[room.turn + 'Userinfo'].id) !== (+player.id)) {
+      // TODO: Send no turn error and respond in frontend.
       console.log('You cannot attack because you are not ', room.turn);
       return;
     }
 
-    console.log('attack with', jutsu);
+    // Get the enemy userinfo and calculate the effective jutsu damage
+    var enemy  = (+room.p1Userinfo.id) === (+player.id) ? room.p2Userinfo : room.p1Userinfo;
+    var damage = mechanics.attack(player, enemy, jutsu);
+    console.log(enemy, 'takes', damage, 'damage');
   });
 }
 

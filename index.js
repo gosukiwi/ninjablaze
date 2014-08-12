@@ -25,8 +25,8 @@ app.use(session({
 }));
 app.use(cookies());
 app.use(dbal({
-  host: 'localhost',
-  user: 'root',
+  host:     'localhost',
+  user:     'root',
   password: 'root',
   database: 'ninjablaze'
 }));
