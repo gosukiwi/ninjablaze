@@ -30,9 +30,7 @@ var Mechanics = {
     var attackerRatio = this.ratio(attacker, jutsu.type);
     var defenderRatio = this.ratio(defender, jutsu.type);
     var damage        = attackerRatio * jutsu.damage;
-    var defended      = defenderRatio / (1000 + defenderRatio);
-
-    console.log('jutsu damage', jutsu.damage, 'ar', attackerRatio, 'dr', defenderRatio, 'damage', damage, 'defended', defended);
+    var defended      = defenderRatio / (100 + defenderRatio);
 
     // Effective damage dealt to defender, truncate to integer value
     return parseInt(damage * (1 - defended), 10);
