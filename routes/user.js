@@ -137,7 +137,7 @@ router.get('/users/:id', function (req, res) {
     'jutsus': [
       {
         name: 'Gokakyou no jutsu',
-        damage: 200,
+        damage: 20,
         element: 'fire',
         type: 'ninjutsu',
         description: 'Some desc...'
@@ -145,7 +145,7 @@ router.get('/users/:id', function (req, res) {
       },
       {
         name: 'Replacemente jutsu',
-        damage: 200,
+        damage: 20,
         element: 0,
         type: 'ninjutsu',
         description: 'Some desc...'
@@ -153,7 +153,7 @@ router.get('/users/:id', function (req, res) {
       },
       {
         name: 'Throw Kunai',
-        damage: 200,
+        damage: 20,
         element: 0,
         type: 'taijutsu',
         description: 'Some desc...'
@@ -161,7 +161,7 @@ router.get('/users/:id', function (req, res) {
       },
       {
         name: 'Potato no jutsu',
-        damage: 200,
+        damage: 20,
         element: 0,
         type: 'genjutsu',
         description: 'Some desc...'

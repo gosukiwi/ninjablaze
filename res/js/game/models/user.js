@@ -21,16 +21,16 @@ define(['jquery', 'backbone', 'collections/jutsus'], function ($, Backbone, Juts
     urlRoot: '/users',
 
     defaults: {
-      'id': 0,
-      'name': 'gosukiwi',
-      'str': 10,
-      'agi': 10,
-      'int': 10,
-      'chakraNature': 'water',
-      'hp': 2500,
-      'currentHp': 1600,
-      'level': 10,
-      'jutsus': []
+      'id'        : 0,
+      'name'      : 'gosukiwi',
+      'str'       : 10,
+      'agi'       : 10,
+      'int'       : 10,
+      'chakra'    : 'water',
+      'hp'        : 2500,
+      'currentHp' : 1600,
+      'level'     : 1,
+      'jutsus'    : []
     }
 
   });

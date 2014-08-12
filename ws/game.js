@@ -25,9 +25,12 @@ function handleSocket(socket, db) {
       }
 
       // Token is okay, so we now have the user data stored in `res`
-      // Add players info to the current room.
+      // Add players info to the current room. Make sure to delete sensitive
+      // data.
       var room = duels[duel.id];
-      var userinfo = { user: res.user, id: res.id };
+      var userinfo = res;
+      delete userinfo.token;
+      delete userinfo.pass;
       if(res.id === room.player1) {
         console.log('p1 is ready');
         room.p1Ready    = true;

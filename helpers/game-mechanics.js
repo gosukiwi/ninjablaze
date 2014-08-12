@@ -9,15 +9,15 @@ var Mechanics = {
   // genjutsu
   // -------------------------------------------------------------------------
   taijutsuRatio: function (str, agi, int) {
-    return str * 10 + agi * 7 + int * 3;
+    return str * 1 + agi * 0.7 + int * 0.3;
   },
 
   ninjutsuRatio: function (str, agi, int) {
-    return agi * 10 + str * 6 + int * 4;
+    return agi * 1 + str * 0.6 + int * 0.4;
   },
 
   genjutsuRatio: function (str, agi, int) {
-    return int * 10 + agi * 8 + int * 2;
+    return int * 1 + agi * 0.8 + int * 0.2;
   },
 
   ratio: function (user, type) {
@@ -32,8 +32,10 @@ var Mechanics = {
     var damage        = attackerRatio * jutsu.damage;
     var defended      = defenderRatio / (1000 + defenderRatio);
 
-    // Effective damage dealt to defender
-    return damage * (1 - defended);
+    console.log('jutsu damage', jutsu.damage, 'ar', attackerRatio, 'dr', defenderRatio, 'damage', damage, 'defended', defended);
+
+    // Effective damage dealt to defender, truncate to integer value
+    return parseInt(damage * (1 - defended), 10);
   }
 
 };
