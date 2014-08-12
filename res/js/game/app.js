@@ -45,7 +45,6 @@ define(['jquery', 'backbone', 'underscore', 'ws', 'helpers/layout',
             console.log('trigger leave turn');
             self.layout.trigger('leave-turn');
           }
-
         });
       });
 

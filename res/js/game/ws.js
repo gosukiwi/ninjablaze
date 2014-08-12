@@ -55,11 +55,6 @@ define(['io', 'jquery-cookie'], function (io) {
     socketEvents: function (socket) {
       var self = this;
 
-      // The server acknowledged this user token and sent us the user info
-      socket.on('game/logged', function (userinfo) {
-        self.pubsub.trigger('logged', userinfo);
-      });
-
       // The game can begin! players is a pojo with both players, and turn is
       // either the string 'p1' or 'p2'.
       socket.on('game/begin', function (userinfo, players, turn) {
