@@ -121,20 +121,11 @@ router.get('/logout', function (req, res) {
 
 router.get('/users/:id', function (req, res) {
   var id = req.params.id;
-  res.json({
-    'id': id,
-    'name': 'gosukiwi',
-    'str': 10,
-    'agi': 10,
-    'int': 10,
-    'chakraNature': 'water',
-    'hp': 2500,
-    'currentHp': 1600,
-    'level': 10,
+  req.db.table('users').findOne(id).then(function (user) {
+    delete user.pass;
+    delete user.token;
 
-    // The enabled jutsus for this user, all users have lots of jutsus but
-    // they can only choose four when dueling.
-    'jutsus': [
+    user.jutsus = [
       {
         name: 'Gokakyou no jutsu',
         damage: 20,
@@ -166,7 +157,12 @@ router.get('/users/:id', function (req, res) {
         type: 'genjutsu',
         description: 'Some desc...'
       }
-    ]
+    ];
+
+    res.json(user);
+  }, function (err) {
+    console.log(err);
+    res.json({ error: 'There has been an error with our database, please try again soon' });
   });
 });
 
