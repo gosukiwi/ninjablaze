@@ -1,10 +1,11 @@
 'use strict';
 
-var gulp = require('gulp');
-
-var less = require('gulp-less');
+var gulp      = require('gulp');
+var less      = require('gulp-less');
+var prefixer  = require('gulp-autoprefixer');
+var csscomb   = require('gulp-csscomb');
 //var uglify = require('gulp-uglify');
-var imagemin = require('gulp-imagemin');
+var imagemin  = require('gulp-imagemin');
 
 var paths = {
   less: 'res/less/**/*.less',
@@ -44,6 +45,16 @@ gulp.task('less', function() {
   return gulp.src(paths.lessMain)
     // Pass in options to the task
     .pipe(less())
+    .pipe(prefixer([
+      'Android 2.3',
+      'Android >= 4',
+      'Chrome >= 20',
+      'Firefox >= 24', // Firefox 24 is the latest ESR
+      'Explorer >= 8',
+      'iOS >= 6',
+      'Opera >= 12',
+      'Safari >= 6']))
+    .pipe(csscomb())
     .pipe(gulp.dest('web/css'));
 });
 

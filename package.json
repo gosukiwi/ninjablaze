@@ -17,6 +17,8 @@
   "devDependencies": {
     "bower": "^1.3.8",
     "gulp": "^3.8.7",
+    "gulp-autoprefixer": "0.0.8",
+    "gulp-csscomb": "^3.0.2",
     "gulp-imagemin": "^0.6.2",
     "gulp-less": "^1.3.3"
   }
