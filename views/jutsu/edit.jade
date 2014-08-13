@@ -1,0 +1,39 @@
+extends ../base.jade
+
+block content
+  h1 Edit jutsu
+
+  form(action='', method='post')
+    label(for='name')
+      span Name
+      input(type='text', placeholder='_______ no jutsu', id='name', 
+      name='name', value='#{jutsu.name}')
+
+    label(for='damage')
+      span Damage
+      input(type='number', placeholder='10', id='damage',
+      name='damage', value='#{jutsu.damage}')
+
+    label(for='element')
+      span Element
+      select(name='element', id='element')
+        option(selected=jutsu.element == 'None') None
+        option(selected=jutsu.element == 'Earth') Earth
+        option(selected=jutsu.element == 'Fire') Fire
+        option(selected=jutsu.element == 'Lightning') Lightning
+        option(selected=jutsu.element == 'Water') Water
+        option(selected=jutsu.element == 'Wind') Wind
+
+    label(for='type')
+      span Type
+      select(name='type', id='type')
+        option(selected=jutsu.type == 'Ninjutsu') Ninjutsu
+        option(selected=jutsu.type == 'Taijutsu') Taijutsu
+        option(selected=jutsu.type == 'Genjutsu') Genjutsu
+
+    label(for='description')
+      span Description
+      textarea(name='description', id='desription', 
+      placeholder='What does this jutsu do?') #{jutsu.description}
+    
+    button(type='submit') Edit

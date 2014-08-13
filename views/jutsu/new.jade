@@ -1,0 +1,39 @@
+extends ../base.jade
+
+block content
+  h1 Create a new jutsu
+
+  form(action='', method='post')
+    label(for='name')
+      span Name
+      input(type='text', placeholder='_______ no jutsu', id='name', 
+      name='name')
+
+    label(for='damage')
+      span Damage
+      input(type='number', placeholder='10', id='damage',
+      name='damage')
+
+    label(for='element')
+      span Element
+      select(name='element', id='element')
+        option None
+        option Earth
+        option Fire
+        option Lightning
+        option Water
+        option Wind
+
+    label(for='type')
+      span Type
+      select(name='type', id='type')
+        option Ninjutsu
+        option Taijutsu
+        option Genjutsu
+
+    label(for='description')
+      span Desription
+      textarea(name='description', id='desription', 
+      placeholder='What does this jutsu do?')
+
+    button(type='submit') Create

@@ -1,0 +1,25 @@
+extends ../base.jade
+
+block content
+  h1 Manage Jutsus
+
+  p Welcome admin! Here you can create and manage existing jutsus
+
+  each jutsu in jutsus
+    h2
+      = jutsu.name
+    p
+      = jutsu.description
+    .jutsu-info
+      ul
+        li Type: 
+          = jutsu.type
+        li Element: 
+          = jutsu.element
+        li Damage: 
+          = jutsu.damage
+    a(href='/jutsus/#{jutsu.id}/edit') Edit
+    a(href='/jutsus/#{jutsu.id}/delete') Delete
+
+  p
+    a(href="/jutsus/new") Create Jutsu
