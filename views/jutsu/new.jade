@@ -36,4 +36,6 @@ block content
       textarea(name='description', id='desription', 
       placeholder='What does this jutsu do?')
 
+    input(type='hidden', name='_csrf', value='#{token}')
+
     button(type='submit') Create

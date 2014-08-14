@@ -19,6 +19,7 @@ router.get('/jutsus', function (req, res) {
 
 router.post('/jutsus/new', function (req, res) {
   var params = req.body;
+  delete params._csrf;
   req.db.table('jutsus').insert(params).then(function () {
     res.redirect('/jutsus');
   }, function () {
@@ -27,8 +28,8 @@ router.post('/jutsus/new', function (req, res) {
 });
 
 router.get('/jutsus/new', function (req, res) {
-  req.db.table('jutsus').find();
-  res.render('jutsu/new');
+  //req.db.table('jutsus').find();
+  res.render('jutsu/new', { token: req.csrfToken() });
 });
 
 router.post('/jutsus/:id/edit', function (req, res) {
@@ -37,7 +38,8 @@ router.post('/jutsus/:id/edit', function (req, res) {
   //  res.redirect('/login');
   //  return;
   //}
-  
+
+  delete req.body._csrf;
   req.db.table('jutsus').update(req.body, { id: req.params.id }).then(function () {
     res.redirect('/jutsus');
   }, function (err) {
@@ -54,7 +56,7 @@ router.get('/jutsus/:id/edit', function (req, res) {
   //}
 
   req.db.table('jutsus').findOne(req.params.id).then(function (jutsu) {
-    res.render('jutsu/edit', { jutsu: jutsu });
+    res.render('jutsu/edit', { jutsu: jutsu, token: req.csrfToken() });
   }, function (err) {
     console.log('Database error when trying to find a jutsu', err);
     res.render('error');

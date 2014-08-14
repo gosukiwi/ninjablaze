@@ -6,6 +6,7 @@ var http        = require('http').Server(app);
 var bodyParser  = require('body-parser');
 var session     = require('express-session');
 var cookies     = require('cookie-parser');
+var csrf        = require('csurf');
 var dbal        = require('./lib/dbal-mysql/src/middleware');
 
 // Configuration
@@ -23,6 +24,7 @@ app.use(session({
   saveUninitialized: true,
   secret: 'sa_10\'=_1@´ñBQp-.aS1lPoAds,ñlb'
 }));
+app.use(csrf());
 app.use(cookies());
 app.use(dbal({
   host:     'localhost',

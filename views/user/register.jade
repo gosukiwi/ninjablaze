@@ -24,4 +24,6 @@ html
         span Email
         input(type='email', placeholder='email', id='email', name='email')
 
+      input(type='hidden', name='_csrf', value='#{token}')
+
       button(type='submit') Register

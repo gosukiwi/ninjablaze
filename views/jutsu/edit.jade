@@ -35,5 +35,7 @@ block content
       span Description
       textarea(name='description', id='desription', 
       placeholder='What does this jutsu do?') #{jutsu.description}
+
+    input(type='hidden', name='_csrf', value='#{token}')
     
     button(type='submit') Edit

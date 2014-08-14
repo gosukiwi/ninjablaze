@@ -37,7 +37,7 @@ function logout_user(req, res) {
 // ---------------------------------------------------------------------------
 
 router.get('/register', function (req, res) {
-  res.render('user/register');
+  res.render('user/register', { token: req.csrfToken() });
 });
 
 router.post('/register', function (req, res) {
@@ -65,7 +65,7 @@ router.post('/register', function (req, res) {
         res.render('user/register_success', { user: params.username });
       }, function (err) {
         console.log('could not add user: ', err);
-        res.render('user/register');
+        res.render('user/register', { token: req.csrfToken() });
       });
     });
   });
@@ -73,12 +73,12 @@ router.post('/register', function (req, res) {
 
 router.get('/login', function (req, res) {
   var user = req.session.user;
+  var warn = null;
   if(user) {
-    res.render('user/login', { warn: user.user });
-    return;
+    warn = user.user;
   }
 
-  res.render('user/login');
+  res.render('user/login', { warn: warn, token: req.csrfToken() });
 });
 
 router.post('/login', function (req, res) {
@@ -87,20 +87,20 @@ router.post('/login', function (req, res) {
 
   // Basic check for parameters
   if(!params.username || !params.password) {
-    res.render('user/login', { failed: true });
+    res.render('user/login', { token: req.csrfToken(), failed: true });
     return;
   }
 
   db.table('users').findOne({ user: params.username }).then(function (user) {
     if(!user) {
-      res.render('user/login', { failed: true });
+      res.render('user/login', { token: req.csrfToken(), failed: true });
       return;
     }
 
     var bcrypt = require('bcrypt');
     bcrypt.compare(params.password, user.pass, function(err, result) {
       if(err || !result) {
-        res.render('user/login', { failed: true });
+        res.render('user/login', { token: req.csrfToken(), failed: true });
         return;
       }
 
@@ -110,7 +110,7 @@ router.post('/login', function (req, res) {
     });
   }, function (err) {
     console.log('db error finding user: ', err);
-    res.render('user/login', { failed: true, dbError: true });
+    res.render('user/login', { token: req.csrfToken(), failed: true, dbError: true });
   });
 });
 
@@ -119,6 +119,8 @@ router.get('/logout', function (req, res) {
   res.redirect('/login');
 });
 
+// JSON Responses
+// ---------------------------------------------------------------------------
 router.get('/users/:id', function (req, res) {
   var id = req.params.id;
   req.db.table('users').findOne(id).then(function (user) {
