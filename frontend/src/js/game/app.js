@@ -58,23 +58,35 @@ define([
       });
 
       // Got attacked! For now just ignore the justu parameter
-      this.layout.on('server/attacked', function (damage, currentHP/*, jutsu*/) {
-        self.layout.trigger('ui/attacked', damage, currentHP);
+      //this.layout.on('server/attacked', function (damage, currentHP/*, jutsu*/) {
+      //  self.layout.trigger('ui/attacked', damage, currentHP);
+      //});
+      
+      this.layout.on('server/turn-finished', function (state) {
+        // First do animations and display messages
+        console.log('Turn ended! The state is', state);
+        var playerstate = state[self.player];
+        self.layout.trigger('ui/attacked', playerstate.damageDealt, playerstate.currentHP);
+
+        // Finally enter turn again
+        self.layout.trigger('ui/enter-turn');
       });
 
       // When the server updates the turn, trigger UI event to enter or leave
       // the turn
-      this.layout.on('server/turn', function (turn) {
-        if(turn === self.player) {
-          self.layout.trigger('ui/enter-turn');
-        } else {
-          self.layout.trigger('ui/leave-turn');
-        }
-      });
+      //this.layout.on('server/turn', function (turn) {
+      //  if(turn === self.player) {
+      //    self.layout.trigger('ui/enter-turn');
+      //  } else {
+      //    self.layout.trigger('ui/leave-turn');
+      //  }
+      //});
 
       // When the game begins, hide the overlay and if it's the player turn
       // display jutsus, if not, hide.
-      this.layout.on('server/begin', function (player_num, players, turn) {
+      this.layout.on('server/begin', function (player_num, players, state) {
+        console.log('Trigger server/begin');
+
         // Get the local player data
         var user = players[player_num];
         // Fetch player info and jutsus from the API
@@ -84,13 +96,13 @@ define([
           self.initializeViews();
           self.player = player_num;
 
-          console.log('turn is', turn, 'and im', self.player);
-          if(turn === self.player) {
+          console.log('status is', state[self.player]);
+          if(state[self.player].status === 'waiting') {
             console.log('trigger enter turn');
             self.layout.trigger('ui/enter-turn');
           } else {
             console.log('trigger leave turn');
-            self.layout.trigger('ui/leave-turn');
+            self.layout.trigger('ui/wait-turn');
           }
         });
       });

@@ -44,6 +44,32 @@ function handleSocket(socket, db) {
       // data.
       // "room" holds the state of current state of the game.
       var room = duels[duel.id];
+
+      // Set up initial state
+      if(!room.state) {
+        console.log('Create room state, should be done only once');
+        // The room is waiting for players to prepare their jutsus
+        room.state = {
+          p1: {
+            status: 'waiting',
+            jutsu: 'none',
+            damage: 0//,
+            // TODO: Store HP here
+            //currentHP: res.hp
+          },
+          p2: {
+            status: 'waiting',
+            jutsu: 'none',
+            damage: 0//,
+            // TODO: Store HP here
+            //currentHP: res.hp
+          }
+        };
+      } else {
+        console.log('Room state was already existing:', room.state);
+      }
+
+      var reconnect = null;
       var userinfo = res;
       delete userinfo.token;
       delete userinfo.pass;
@@ -58,6 +84,8 @@ function handleSocket(socket, db) {
           room.p1HP        = res.hp;
           room.p1CurrentHP = res.hp;
           room.p1Userinfo  = userinfo;
+        } else {
+          reconnect = 'p1';
         }
 
         // It's a reconnect, just refresh socket
@@ -70,16 +98,12 @@ function handleSocket(socket, db) {
           room.p2HP        = res.hp;
           room.p2CurrentHP = res.hp;
           room.p2Userinfo  = userinfo;
+        } else {
+          reconnect = 'p2';
         }
 
         // It's a reconnect, just refresh socket
         room.p2Socket   = socket;
-      }
-
-      if(!room.turn) {
-        // p1 starts
-        room.turn = 'p1';
-        console.log('turn created from scratch, turn is p1');
       }
 
       // If both players are ready, start game!
@@ -97,20 +121,27 @@ function handleSocket(socket, db) {
             userinfo: room.p2Userinfo
           }
         };
-        room.p1Socket.emit('game/begin', 'p1', playersinfo, room.turn);
-        room.p2Socket.emit('game/begin', 'p2', playersinfo, room.turn);
-        console.log('game begin, turn is', room.turn, 'room info:', room);
+
+        if(!reconnect) {
+          room.p1Socket.emit('game/begin', 'p1', playersinfo, room.state);
+          room.p2Socket.emit('game/begin', 'p2', playersinfo, room.state);
+          console.log('game begin, state is', room.state);
+        } else {
+          console.log(reconnect, 'reconnected');
+          room[reconnect + 'Socket'].emit('game/begin', reconnect, playersinfo, room.state);
+        }
       } else {
         // Only one player is ready, wait for the second
         console.log('first player registered, player is ready');
-        socket.emit('game/player-is-ready', res.user);
+        //socket.emit('game/player-is-ready', res.user);
       }
     }, function (err) {
+      // Invalid user, could not find that token
       console.log('cannot find player with token: ', playerToken, err);
     });
   });
 
-  // A player wants to attack
+  // A player wants to attack, thus prepare her jutsu
   socket.on('game/attack', function (jutsu, roomId, player) {
     var room = duels[roomId];
     if(!room) {
@@ -119,48 +150,111 @@ function handleSocket(socket, db) {
       return;
     }
 
-    // Check if it's in the correct turn, cast both values to integers
-    if((+room[room.turn + 'Userinfo'].id) !== (+player.id)) {
-      // TODO: Send no turn error and respond in frontend.
-      console.log('You cannot attack because you are not ', room.turn);
+    console.log('Try to attack with', jutsu);
+    if(!jutsu) {
+      console.log('select a jutsu! cannot attack');
       return;
     }
 
-    // Get the enemy userinfo and calculate the effective jutsu damage
+    var num    = (+room.p1Userinfo.id) === (+player.id) ? 'p1' : 'p2';
     var enemy  = (+room.p1Userinfo.id) === (+player.id) ? room.p2Userinfo : room.p1Userinfo;
+    // Get the enemy userinfo and calculate the effective jutsu damage
     var damage = mechanics.attack(player, enemy, jutsu);
-    // Emit attacked event and change turn
-    if(room.turn === 'p1') {
-      console.log('p1 attacked p2', damage, enemy, jutsu);
-      room.turn = 'p2';
-      room.p2CurrentHP = room.p2CurrentHP - damage;
-      room.p2Socket.emit('game/attacked', damage, room.p2CurrentHP, jutsu);
+    if(room.state[num].status === 'waiting') {
+      console.log('Registered!', num, 'is ready');
+      room.state[num].status = 'ready';
+      room.state[num].jutsu = jutsu;
+      room.state[num].damage = damage;
     } else {
-      console.log('p2 attacked p1', damage, enemy, jutsu);
-      room.turn = 'p1';
-      room.p1CurrentHP = room.p1CurrentHP - damage;
-      room.p1Socket.emit('game/attacked', damage, room.p1CurrentHP, jutsu);
+      // Already attacked?
+      // TODO: Send no turn error and respond in frontend.
+      console.log('You have already attacked!');
+      return;
     }
-    console.log(enemy, 'takes', damage, 'damage');
 
-    if(room.p1CurrentHP <= 0) {
-      // Emit turn change
-      room.p1Socket.emit('game/game-over', 'p2');
-      room.p2Socket.emit('game/game-over', 'p2');
+    if(room.state.p1.status === 'ready' && room.state.p2.status === 'ready') {
+      console.log('Both players are ready according to state', room.state);
 
-      // Destroy room and save stats
-      closeGame(db, room, 'p2');
-    } else if(room.p2CurrentHP <= 0) {
-      room.p1Socket.emit('game/game-over', 'p1');
-      room.p2Socket.emit('game/game-over', 'p1');
+      // Process turn
+      room.p1CurrentHP = room.p1CurrentHP - room.state.p2.damage;
+      room.p2CurrentHP = room.p2CurrentHP - room.state.p1.damage;
 
-      // Destroy room and save stats
-      closeGame(db, room, 'p1');
-    } else {
-      // Emit turn change
-      room.p1Socket.emit('game/turn', room.turn);
-      room.p2Socket.emit('game/turn', room.turn);
+      // Who is faster? The faster attacks first.
+      // TODO: If they are equal, make it random
+      var first  = room.p1Userinfo.agi > room.p2Userinfo.agi ? 'p1' : 'p2';
+      var second = first === 'p1' ? 'p2' : 'p1';
+      // Did any of the players die? Check for the one who got attacked first
+      if(room[second + 'CurrentHP'] <= 0) {
+        // Game over! The winner is "first", the first who attacked.
+        room.p1Socket.emit('game/game-over', first);
+        room.p2Socket.emit('game/game-over', first);
+        closeGame(db, room, first);
+      } else if(room[first + 'CurrentHP'] <= 0) {
+        // Game over! The winner is "first", the first who attacked.
+        room.p1Socket.emit('game/game-over', second);
+        room.p2Socket.emit('game/game-over', second);
+        closeGame(db, room, second);
+      } else {
+        var state = {
+          p1: {
+            currentHP: room.p1CurrentHP,
+            jutsuUsed: room.state.p1.jutsu,
+            damageDealt: room.state.p1.damage
+          },
+          p2: {
+            currentHP: room.p2CurrentHP,
+            jutsuUsed: room.state.p2.jutsu,
+            damageDealt: room.state.p2.damage
+          }
+        };
+        room.p1Socket.emit('game/turn-finished', state);
+        room.p2Socket.emit('game/turn-finished', state);
+
+        // Clean up state
+        room.state.p1.status = 'waiting';
+        room.state.p1.jutsu  = 'none';
+        room.state.p1.damage = 0;
+        room.state.p2.status = 'waiting';
+        room.state.p2.jutsu  = 'none';
+        room.state.p2.damage = 0;
+      }
     }
+
+    // Get the enemy userinfo and calculate the effective jutsu damage
+    //var enemy  = (+room.p1Userinfo.id) === (+player.id) ? room.p2Userinfo : room.p1Userinfo;
+    //var damage = mechanics.attack(player, enemy, jutsu);
+    //// Emit attacked event and change turn
+    //if(room.turn === 'p1') {
+    //  console.log('p1 attacked p2', damage, enemy, jutsu);
+    //  room.turn = 'p2';
+    //  room.p2CurrentHP = room.p2CurrentHP - damage;
+    //  room.p2Socket.emit('game/attacked', damage, room.p2CurrentHP, jutsu);
+    //} else {
+    //  console.log('p2 attacked p1', damage, enemy, jutsu);
+    //  room.turn = 'p1';
+    //  room.p1CurrentHP = room.p1CurrentHP - damage;
+    //  room.p1Socket.emit('game/attacked', damage, room.p1CurrentHP, jutsu);
+    //}
+    //console.log(enemy, 'takes', damage, 'damage');
+
+    //if(room.p1CurrentHP <= 0) {
+    //  // Emit turn change
+    //  room.p1Socket.emit('game/game-over', 'p2');
+    //  room.p2Socket.emit('game/game-over', 'p2');
+
+    //  // Destroy room and save stats
+    //  closeGame(db, room, 'p2');
+    //} else if(room.p2CurrentHP <= 0) {
+    //  room.p1Socket.emit('game/game-over', 'p1');
+    //  room.p2Socket.emit('game/game-over', 'p1');
+
+    //  // Destroy room and save stats
+    //  closeGame(db, room, 'p1');
+    //} else {
+    //  // Emit turn change
+    //  room.p1Socket.emit('game/turn', room.turn);
+    //  room.p2Socket.emit('game/turn', room.turn);
+    //}
   });
 }
 

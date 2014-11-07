@@ -57,8 +57,13 @@ define(['io', 'jquery-cookie'], function (io) {
       });
 
       // Got attacked!
-      socket.on('game/attacked', function (damage, enemy, jutsu) {
-        self.pubsub.trigger('server/attacked', damage, enemy, jutsu);
+      //socket.on('game/attacked', function (damage, enemy, jutsu) {
+      //  self.pubsub.trigger('server/attacked', damage, enemy, jutsu);
+      //});
+
+      // The turn finished, we got the current state of the game
+      socket.on('game/turn-finished', function (state) {
+        self.pubsub.trigger('server/turn-finished', state);
       });
 
       // Turn changed

@@ -11,7 +11,7 @@ define(['backbone', 'underscore', 'text!templates/info.ejs'],
 
     initialize: function () {
       this.listenTo(this.layout, 'ui/select-jutsu', this.selectJutsu);
-      this.listenTo(this.layout, 'ui/leave-turn', this.leaveTurn);
+      this.listenTo(this.layout, 'ui/wait-turn', this.clear);
       this.listenTo(this.model, 'change', this.jutsuChanged);
     },
 
@@ -19,7 +19,7 @@ define(['backbone', 'underscore', 'text!templates/info.ejs'],
       this.model.set(jutsu.toJSON());
     },
 
-    leaveTurn: function () {
+    clear: function () {
       this.model.clear();
     },
 
@@ -40,6 +40,7 @@ define(['backbone', 'underscore', 'text!templates/info.ejs'],
     events: {
       'click .attack': function () {
         this.layout.trigger('ui/attack', this.model);
+        this.layout.trigger('ui/wait-turn');
       },
 
       'click .cancel': function () {
