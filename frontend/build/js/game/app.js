@@ -70,7 +70,7 @@ define([
           self.user.set('currentHP', user.currentHP);
           console.log('loaded user', self.user);
           self.layout.trigger('ws/user-loaded', self.user);
-          self.renderViews();
+          self.initializeViews();
           self.player = player_num;
 
           console.log('turn is', turn, 'and im', self.player);
@@ -92,7 +92,7 @@ define([
     },
 
     // Get current user and render all the views for that user
-    renderViews: function () {
+    initializeViews: function () {
       console.log('render views');
       this.layout.add(JutsuView, { 
         el: '#info-panel',
@@ -110,9 +110,6 @@ define([
       });
 
       this.layout.render();
-
-      // Trigger an user-loaded event so the WebSocket can get the user
-      //this.layout.trigger('ws/user-loaded', user);
     }
 
   };
