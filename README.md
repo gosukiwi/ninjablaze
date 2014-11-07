@@ -13,3 +13,11 @@ How to hack on Ninja Blaze:
  * `helpers` is doubtful for now.
  * `lib` contains non-vendor libraries.
 
+## TODO
+
+ * Turn timer, 1 minute seems fair for now
+ * Homepage, with current games going on and stuff
+ * Elemental damage?
+ * More jutsus
+ * Let users choose jutsus
+ * Add OPTIONS button in game page, like hearthstone, so you can quit and stuff

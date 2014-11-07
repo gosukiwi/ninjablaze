@@ -127,6 +127,7 @@ router.get('/users/:id', function (req, res) {
     delete user.pass;
     delete user.token;
 
+    // TODO: Load this from database...
     user.jutsus = [
       {
         name: 'Gokakyou no jutsu',

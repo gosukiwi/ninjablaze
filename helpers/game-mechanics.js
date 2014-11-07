@@ -7,7 +7,11 @@
 var Mechanics = {
 
   // Functions to calculate jutsu type multiplier, either taijutsu, ninjutsu or
-  // genjutsu
+  // genjutsu. The idea is genjutsu > taijutsu > ninjutsu, but it's quite rough.
+  //
+  // Taijutsu scales best with STR, and decent with AGI
+  // Ninjutsu scales best with AGI, and decent with STR
+  // Genjutsu scales best with INT, and decent with AGI
   // -------------------------------------------------------------------------
   taijutsuRatio: function (str, agi, int) {
     return str * 1 + agi * 0.7 + int * 0.3;
@@ -31,6 +35,7 @@ var Mechanics = {
     var attackerRatio = this.ratio(attacker, jutsu.type);
     var defenderRatio = this.ratio(defender, jutsu.type);
     var damage        = attackerRatio * jutsu.damage;
+    // TODO: Element?
     var defended      = defenderRatio / (100 + defenderRatio);
 
     // Effective damage dealt to defender, truncate to integer value
