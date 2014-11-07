@@ -2,6 +2,7 @@
 
 /**
  * Game mechanic things.
+ * Used to calculate damage and store formulas.
  */
 var Mechanics = {
 

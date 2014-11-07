@@ -61,13 +61,13 @@ function handleSocket(socket, db) {
     db.table('duels').insert({
       'player1': p1_id,
       'player2': p2_id,
-      'state': 'beeing-created',
       'winner': 0
     }).then(function (res) {
       socket.emit('lobby/duel-start', players, res.insertId);
       p1_socket.emit('lobby/duel-start', players, res.insertId);
     }, function (err) {
       // Emit a DB error to both players
+      // TODO: Handle this in client side?
       socket.emit('lobby/duel-db-error', err);
       p1_socket.emit('lobby/duel-db-error', err);
     });

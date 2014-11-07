@@ -68,7 +68,7 @@ define(['io', 'jquery-cookie'], function (io) {
 
       // Game over!
       socket.on('game/game-over', function (winner) {
-        self.pubsub.trigger('game/game-over', winner);
+        self.pubsub.trigger('server/game-over', winner);
       });
     }
   };

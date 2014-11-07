@@ -4,6 +4,18 @@ var mechanics = require('../helpers/game-mechanics');
 // Duels going on right now
 var duels     = {};
 
+// Remove a duel from the database
+function closeGame(db, room/*, winner*/) {
+  delete duels[room.id];
+  db.table('duels').remove({ id: room.id }).then(function () {
+    console.log('Cleaned up room');
+  }, function (err) {
+    console.log('Could not delete room:', err);
+  });
+
+  // TODO: Add to match history
+}
+
 function handleSocket(socket, db) {
   // A player is ready to start, build the room for the duel. 
   // IMPORTANT! This also gets called on reconnect, so handle properly.
@@ -34,6 +46,9 @@ function handleSocket(socket, db) {
       var userinfo = res;
       delete userinfo.token;
       delete userinfo.pass;
+      // Set the room ID
+      console.log('created room', room.id);
+      room.id = duel.id;
       if(res.id === room.player1) {
         // Is this the first time we connect?
         if(!room.p1Ready) {
@@ -129,15 +144,17 @@ function handleSocket(socket, db) {
 
     if(room.p1CurrentHP <= 0) {
       // Emit turn change
-      room.p1Socket.emit('game/game-over', 'p2 wins');
-      room.p2Socket.emit('game/game-over', 'p2 wins');
+      room.p1Socket.emit('game/game-over', 'p2');
+      room.p2Socket.emit('game/game-over', 'p2');
 
-      // TODO: Destroy room
+      // Destroy room and save stats
+      closeGame(db, room, 'p2');
     } else if(room.p2CurrentHP <= 0) {
-      room.p1Socket.emit('game/game-over', 'p1 wins');
-      room.p2Socket.emit('game/game-over', 'p1 wins');
+      room.p1Socket.emit('game/game-over', 'p1');
+      room.p2Socket.emit('game/game-over', 'p1');
 
-      // TODO: Destroy room
+      // Destroy room and save stats
+      closeGame(db, room, 'p1');
     } else {
       // Emit turn change
       room.p1Socket.emit('game/turn', room.turn);

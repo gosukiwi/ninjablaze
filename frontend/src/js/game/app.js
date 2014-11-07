@@ -44,6 +44,19 @@ define([
         self.layout.trigger('ws/attack', jutsu, self.user);
       });
 
+      // Game over! GG.
+      this.layout.on('server/game-over', function (winner) {
+        if(winner === self.player) {
+          // TODO: Modal
+          console.log('YOU WIN!');
+        } else {
+          // TODO: Modal
+          console.log('YOU LOSE!');
+        }
+
+        window.location = '/lobby';
+      });
+
       // Got attacked! For now just ignore the justu parameter
       this.layout.on('server/attacked', function (damage, currentHP/*, jutsu*/) {
         self.layout.trigger('ui/attacked', damage, currentHP);
@@ -62,8 +75,6 @@ define([
       // When the game begins, hide the overlay and if it's the player turn
       // display jutsus, if not, hide.
       this.layout.on('server/begin', function (player_num, players, turn) {
-        console.log('Game begin info got! Current game state:', players);
-
         // Get the local player data
         var user = players[player_num];
         // Fetch player info and jutsus from the API
