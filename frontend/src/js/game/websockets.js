@@ -21,7 +21,7 @@ define(['io', 'jquery-cookie'], function (io) {
       this.pubsub = pubsub;
       this.subscribe();
 
-      // Bind all socket events in this.socketEvents
+      // Bind all socket events in this.socketEvents on connection
       var self = this;
       this.socket = io();
       this.socket.on('connect', function () {

@@ -19,6 +19,7 @@ function closeGame(db, room/*, winner*/) {
 function handleSocket(socket, db) {
   // A player is ready to start, build the room for the duel. 
   // IMPORTANT! This also gets called on reconnect, so handle properly.
+  // "duel" contains data read from the frontend, duel id and players
   socket.on('game/ready', function (playerToken, duel) {
     console.log('game ready was emitted! Lets see...');
 
