@@ -21,3 +21,4 @@ How to hack on Ninja Blaze:
  * More jutsus
  * Let users choose jutsus
  * Add OPTIONS button in game page, like hearthstone, so you can quit and stuff
+ * Add logging, mostly for the server events
