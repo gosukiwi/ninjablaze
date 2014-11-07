@@ -1,6 +1,3 @@
-/**
- * A Layout manages a bunch of views.
- */
 define(['backbone', 'underscore'], function(Backbone, _) {
   'use strict';
 
@@ -12,13 +9,14 @@ define(['backbone', 'underscore'], function(Backbone, _) {
   // Public methods
   {
     
-    // Add a view to the layout
+    // Add a view to the manager
     add: function (View, options) {
       var self = this;
+      //options = _.extend({ manager: this }, options);
       var constructor = View.prototype.initialize;
       if(_.isFunction(constructor)) {
         View.prototype.initialize = function () {
-          this.layout = self;
+          this.manager = self;
           constructor.apply(this, arguments);
         };
       }
@@ -37,6 +35,13 @@ define(['backbone', 'underscore'], function(Backbone, _) {
 
   }, 
   // Also extend from Backbone.Events so we make this object a Mediator/PubSub
+  // Views can then do
+  //
+  //   this.manager.trigger('something-happened');
+  //
+  // And
+  //
+  //   this.manager.on('something-else', this.doSomething);
   Backbone.Events);
 
   return Layout;

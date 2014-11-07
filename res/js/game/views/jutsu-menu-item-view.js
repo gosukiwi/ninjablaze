@@ -24,7 +24,7 @@ define(['backbone', 'underscore', 'text!templates/jutsu.ejs'],
     events: {
       // clicking on a jutsu
       'click a': function () {
-        this.layout.trigger('select-jutsu', this.model);
+        this.layout.trigger('ui/select-jutsu', this.model);
       }
     }
 

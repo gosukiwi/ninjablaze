@@ -11,11 +11,17 @@ define(['backbone', 'underscore', 'text!templates/info.ejs'],
 
     initialize: function () {
       var self = this;
-      this.layout.on('select-jutsu', function (jutsu) {
+      this.layout.on('ui/select-jutsu', function (jutsu) {
         self.model.set(jutsu.toJSON());
       });
 
+      this.listenTo(this.layout, 'ui/leave-turn', this.leaveTurn);
+
       this.listenTo(this.model, 'change', this.jutsuChanged);
+    },
+
+    leaveTurn: function () {
+      this.model.clear();
     },
 
     jutsuChanged: function () {
@@ -34,7 +40,7 @@ define(['backbone', 'underscore', 'text!templates/info.ejs'],
 
     events: {
       'click .attack': function () {
-        this.layout.trigger('attack', this.model);
+        this.layout.trigger('ui/attack', this.model);
       },
 
       'click .cancel': function () {

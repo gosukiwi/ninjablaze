@@ -5,13 +5,15 @@ var mechanics = require('../helpers/game-mechanics');
 var duels     = {};
 
 function handleSocket(socket, db) {
-  // A player is ready to start, build the room for the duel.
+  // A player is ready to start, build the room for the duel. 
+  // IMPORTANT! This also gets called on reconnect, so handle properly.
   socket.on('game/ready', function (playerToken, duel) {
     console.log('game ready was emitted! Lets see...');
 
     // Create duel if not exists
     if(!duels[duel.id]) {
       duels[duel.id] = duel;
+      console.log('created duel', duel);
     }
 
     var ip = socket.handshake.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
@@ -27,6 +29,7 @@ function handleSocket(socket, db) {
       // Token is okay, so we now have the user data stored in `res`
       // Add players info to the current room. Make sure to delete sensitive
       // data.
+      // "room" holds the state of current state of the game.
       var room = duels[duel.id];
       var userinfo = res;
       delete userinfo.token;
@@ -44,8 +47,12 @@ function handleSocket(socket, db) {
         room.p2HP       = res.hp;
         room.p2Userinfo = userinfo;
       }
-      // p1 starts
-      room.turn = 'p1';
+
+      if(!room.turn) {
+        // p1 starts
+        room.turn = 'p1';
+        console.log('turn created from scratch, turn is p1');
+      }
 
       // If both players are ready, start game!
       if(room.p1Ready && room.p2Ready) {
@@ -54,10 +61,11 @@ function handleSocket(socket, db) {
           p1: room.p1Userinfo,
           p2: room.p2Userinfo
         };
-        room.p1Socket.emit('game/begin', room.p1Userinfo, playersinfo, 'p1');
-        room.p2Socket.emit('game/begin', room.p2Userinfo, playersinfo, 'p1');
+        room.p1Socket.emit('game/begin', room.p1Userinfo, playersinfo, room.turn);
+        room.p2Socket.emit('game/begin', room.p2Userinfo, playersinfo, room.turn);
+        console.log('game begin, turn is', room.turn, 'room info:', room);
       } else {
-      // Only one player is ready, wait for the second
+        // Only one player is ready, wait for the second
         console.log('first player registered, player is ready');
         socket.emit('game/player-is-ready', res.user);
       }

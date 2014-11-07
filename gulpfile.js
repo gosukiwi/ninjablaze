@@ -18,19 +18,19 @@ var paths = {
 
 gulp.task('bower', function() {
   return gulp.src(paths.bower)
-    .pipe(gulp.dest('web/vendor'));
+    .pipe(gulp.dest('webroot/vendor'));
 });
 
 gulp.task('scripts', function() {
   return gulp.src(paths.scripts)
     //.pipe(uglify())
-    .pipe(gulp.dest('web/js'));
+    .pipe(gulp.dest('webroot/js'));
 });
 
 gulp.task('fonts', function() {
   return gulp.src(paths.fonts)
     // Pass in options to the task
-    .pipe(gulp.dest('web/fonts'));
+    .pipe(gulp.dest('webroot/fonts'));
 });
 
 // Copy all static images
@@ -38,7 +38,7 @@ gulp.task('images', function() {
   return gulp.src(paths.images)
     // Pass in options to the task
     .pipe(imagemin({optimizationLevel: 5}))
-    .pipe(gulp.dest('web/img'));
+    .pipe(gulp.dest('webroot/img'));
 });
 
 gulp.task('less', function() {
@@ -55,7 +55,7 @@ gulp.task('less', function() {
       'Opera >= 12',
       'Safari >= 6']))
     .pipe(csscomb())
-    .pipe(gulp.dest('web/css'));
+    .pipe(gulp.dest('webroot/css'));
 });
 
 // Rerun the task when a file changes

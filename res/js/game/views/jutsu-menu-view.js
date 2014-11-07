@@ -9,9 +9,8 @@ define(['backbone', 'underscore', 'views/jutsu-menu-item-view'],
   return Backbone.View.extend({
 
     initialize: function () {
-      this.listenTo(this.layout, 'enter-turn', this.enterTurn);
-      this.listenTo(this.layout, 'leave-turn', this.leaveTurn);
-      console.log('bind stuff in menu view');
+      this.listenTo(this.layout, 'ui/enter-turn', this.enterTurn);
+      this.listenTo(this.layout, 'ui/leave-turn', this.leaveTurn);
     },
 
     enterTurn: function () {
@@ -20,7 +19,6 @@ define(['backbone', 'underscore', 'views/jutsu-menu-item-view'],
     },
 
     leaveTurn: function () {
-      console.log('hide menu');
       this.$el.hide();
     },
 
