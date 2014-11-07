@@ -6,7 +6,7 @@ define([
       'jquery', 
       'backbone', 
       'underscore', 
-      'ws', 
+      'websockets', 
       'helpers/layout',
       'views/jutsu-menu-view', 
       'views/hp-view', 

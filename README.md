@@ -7,7 +7,7 @@ How to hack on Ninja Blaze:
 
  * If not already, run `npm install` and `bower install`.
  * Run `gulp` and do frontend work in `frontend/src/`.
- * `websocket` folder contains the "game server", WebSockets goodness.
+ * `websockets` folder contains the "game server", WebSockets goodness.
  * `templates` contains the views used by Express.
  * `routes` contains the routes used by Express.
  * `helpers` is doubtful for now.
