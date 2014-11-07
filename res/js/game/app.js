@@ -42,8 +42,10 @@ define([
         self.layout.trigger('ws/attack', jutsu);
       });
 
+      // Got attacked!
       this.layout.on('server/attacked', function (damage, enemy, jutsu) {
         console.log('Got attacked!', damage, enemy, jutsu);
+        self.layout.trigger('ui/attacked', damage);
       });
 
       // When the server updates the turn, send correct UI event

@@ -10,6 +10,16 @@ define(['backbone', 'underscore', 'text!templates/hp.ejs'],
 
     initialize: function () {
       this.listenTo(this.model, 'change:currentHp', this.update);
+
+      this.listenTo(this.layout, 'ui/attacked', this.attacked);
+    },
+
+    attacked: function (damage) {
+      var hp = this.model.get('currentHp') - damage;
+      if(hp < 0) {
+        hp = 0;
+      }
+      this.model.set('currentHp', hp);
     },
 
     template: _.template(hpTemplate),
