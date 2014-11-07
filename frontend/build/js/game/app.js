@@ -72,16 +72,6 @@ define([
         self.layout.trigger('ui/enter-turn');
       });
 
-      // When the server updates the turn, trigger UI event to enter or leave
-      // the turn
-      //this.layout.on('server/turn', function (turn) {
-      //  if(turn === self.player) {
-      //    self.layout.trigger('ui/enter-turn');
-      //  } else {
-      //    self.layout.trigger('ui/leave-turn');
-      //  }
-      //});
-
       // When the game begins, hide the overlay and if it's the player turn
       // display jutsus, if not, hide.
       this.layout.on('server/begin', function (player_num, players, state) {
