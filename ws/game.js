@@ -85,7 +85,36 @@ function handleSocket(socket, db) {
     // Get the enemy userinfo and calculate the effective jutsu damage
     var enemy  = (+room.p1Userinfo.id) === (+player.id) ? room.p2Userinfo : room.p1Userinfo;
     var damage = mechanics.attack(player, enemy, jutsu);
+    // Emit attacked event and change turn
+    if(room.turn === 'p1') {
+      console.log('p1 attacked p2', damage, enemy, jutsu);
+      room.p2Socket.emit('game/attacked', damage, enemy, jutsu);
+      room.turn = 'p2';
+      room.p2HP = room.p2HP - damage;
+    } else {
+      console.log('p2 attacked p1', damage, enemy, jutsu);
+      room.p1Socket.emit('game/attacked', damage, enemy, jutsu);
+      room.turn = 'p1';
+      room.p1HP = room.p1HP - damage;
+    }
     console.log(enemy, 'takes', damage, 'damage');
+
+    if(room.p1HP <= 0) {
+      // Emit turn change
+      room.p1Socket.emit('game/game-over', 'p2 wins');
+      room.p2Socket.emit('game/game-over', 'p2 wins');
+
+      // TODO: Destroy room
+    } else if(room.p2HP <= 0) {
+      room.p1Socket.emit('game/game-over', 'p1 wins');
+      room.p2Socket.emit('game/game-over', 'p1 wins');
+
+      // TODO: Destroy room
+    } else {
+      // Emit turn change
+      room.p1Socket.emit('game/turn', room.turn);
+      room.p2Socket.emit('game/turn', room.turn);
+    }
   });
 }
 

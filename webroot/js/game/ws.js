@@ -51,24 +51,30 @@ define(['io', 'jquery-cookie'], function (io) {
       });
     },
 
-    // Handle all socket events
+    // Handle all socket events in here, and using pubsub all views can
+    // subscribe as needed.
     socketEvents: function (socket) {
       var self = this;
 
       // The game can begin! players is a pojo with both players, and turn is
       // either the string 'p1' or 'p2'.
       socket.on('game/begin', function (userinfo, players, turn) {
-        self.pubsub.trigger('begin', userinfo, players, turn);
+        self.pubsub.trigger('server/begin', userinfo, players, turn);
       });
 
-      // Got attacked
+      // Got attacked!
       socket.on('game/attacked', function (damage, enemy, jutsu) {
-        self.pubsub.trigger('attacked', damage, 'to', enemy, 'with', jutsu);
+        self.pubsub.trigger('server/attacked', damage, enemy, jutsu);
       });
 
       // Turn changed
       socket.on('game/turn', function (turn) {
-        self.pubsub.trigger('turn', turn);
+        self.pubsub.trigger('server/turn', turn);
+      });
+
+      // Game over!
+      socket.on('game/game-over', function (winner) {
+        self.pubsub.trigger('game/game-over', winner);
       });
     }
   };
