@@ -39,16 +39,18 @@ define([
       // All events in the "server" namespace are received from the server,
       // others are generated locally in the UI.
       this.layout.on('ui/attack', function (jutsu) {
-        self.layout.trigger('ws/attack', jutsu);
+        // The "ws" event namespace is to send websocket events, handled in
+        // websockets.js
+        self.layout.trigger('ws/attack', jutsu, self.user);
       });
 
-      // Got attacked!
-      this.layout.on('server/attacked', function (damage, currentHP, jutsu) {
-        console.log('Got attacked!', damage, currentHP, jutsu);
+      // Got attacked! For now just ignore the justu parameter
+      this.layout.on('server/attacked', function (damage, currentHP/*, jutsu*/) {
         self.layout.trigger('ui/attacked', damage, currentHP);
       });
 
-      // When the server updates the turn, send correct UI event
+      // When the server updates the turn, trigger UI event to enter or leave
+      // the turn
       this.layout.on('server/turn', function (turn) {
         if(turn === self.player) {
           self.layout.trigger('ui/enter-turn');
@@ -68,8 +70,6 @@ define([
         self.user = new User({ id: user.userinfo.id });
         self.user.fetch().then(function () {
           self.user.set('currentHP', user.currentHP);
-          console.log('loaded user', self.user);
-          self.layout.trigger('ws/user-loaded', self.user);
           self.initializeViews();
           self.player = player_num;
 

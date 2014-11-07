@@ -39,15 +39,9 @@ define(['io', 'jquery-cookie'], function (io) {
     subscribe: function () {
       var self = this;
 
-      // When the application loads the current user info, subscribe to that
-      // event and save the user data.
-      this.pubsub.on('ws/user-loaded', function (user) {
-        self.user = user;
-      });
-
       // The user wants to attack! Emit a socket event
-      this.pubsub.on('ws/attack', function (jutsu) {
-        self.socket.emit('game/attack', jutsu.toJSON(), roomId, self.user.toJSON());
+      this.pubsub.on('ws/attack', function (jutsu, user) {
+        self.socket.emit('game/attack', jutsu.toJSON(), roomId, user.toJSON());
       });
     },
 
