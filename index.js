@@ -16,7 +16,7 @@ app.set('view engine', 'jade');
 
 // Middleware
 // ---------------------------------------------------------------------------
-app.use('/assets', express.static('webroot'));
+app.use('/assets', express.static('frontend/build'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(session({

@@ -8,29 +8,29 @@ var csscomb   = require('gulp-csscomb');
 var imagemin  = require('gulp-imagemin');
 
 var paths = {
-  less: 'res/less/**/*.less',
-  lessMain: 'res/less/style.less',
-  scripts: 'res/js/**/*',
-  images: 'res/img/**/*',
-  fonts: 'res/fonts/**/*',
+  less: 'frontend/src/less/**/*.less',
+  lessMain: 'frontend/src/less/style.less',
+  scripts: 'frontend/src/js/**/*',
+  images: 'frontend/src/img/**/*',
+  fonts: 'frontend/src/fonts/**/*',
   bower: 'bower_components/**/*',
 };
 
 gulp.task('bower', function() {
   return gulp.src(paths.bower)
-    .pipe(gulp.dest('webroot/vendor'));
+    .pipe(gulp.dest('frontend/build/vendor'));
 });
 
 gulp.task('scripts', function() {
   return gulp.src(paths.scripts)
     //.pipe(uglify())
-    .pipe(gulp.dest('webroot/js'));
+    .pipe(gulp.dest('frontend/build/js'));
 });
 
 gulp.task('fonts', function() {
   return gulp.src(paths.fonts)
     // Pass in options to the task
-    .pipe(gulp.dest('webroot/fonts'));
+    .pipe(gulp.dest('frontend/build/fonts'));
 });
 
 // Copy all static images
@@ -38,7 +38,7 @@ gulp.task('images', function() {
   return gulp.src(paths.images)
     // Pass in options to the task
     .pipe(imagemin({optimizationLevel: 5}))
-    .pipe(gulp.dest('webroot/img'));
+    .pipe(gulp.dest('frontend/build/img'));
 });
 
 gulp.task('less', function() {
@@ -55,7 +55,7 @@ gulp.task('less', function() {
       'Opera >= 12',
       'Safari >= 6']))
     .pipe(csscomb())
-    .pipe(gulp.dest('webroot/css'));
+    .pipe(gulp.dest('frontend/build/css'));
 });
 
 // Rerun the task when a file changes
