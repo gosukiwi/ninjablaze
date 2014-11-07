@@ -9,17 +9,16 @@ define(['backbone', 'underscore', 'text!templates/hp.ejs'],
   return Backbone.View.extend({
 
     initialize: function () {
-      this.listenTo(this.model, 'change:currentHp', this.update);
-
       this.listenTo(this.layout, 'ui/attacked', this.attacked);
+      this.listenTo(this.model, 'change:currentHP', this.update);
     },
 
-    attacked: function (damage) {
-      var hp = this.model.get('currentHp') - damage;
-      if(hp < 0) {
-        hp = 0;
+    attacked: function (damage, currentHP) {
+      // Let's make sure we don't break anything!
+      if(currentHP < 0) {
+        currentHP = 0;
       }
-      this.model.set('currentHp', hp);
+      this.model.set('currentHP', currentHP);
     },
 
     template: _.template(hpTemplate),
@@ -30,7 +29,7 @@ define(['backbone', 'underscore', 'text!templates/hp.ejs'],
     },
 
     update: function () {
-      var curr = this.model.get('currentHp');
+      var curr = this.model.get('currentHP');
       var total = this.model.get('hp');
       var perc = parseInt(curr * 100 / total, 10);
 

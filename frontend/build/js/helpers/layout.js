@@ -1,5 +1,6 @@
 /**
- * A Layout manages a bunch of views.
+ * A Layout manages a bunch of views. Views can then subscribe to it's layout
+ * events, that way multiple views can share and react to the same events.
  */
 define(['backbone', 'underscore'], function(Backbone, _) {
   'use strict';

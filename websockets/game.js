@@ -35,17 +35,29 @@ function handleSocket(socket, db) {
       delete userinfo.token;
       delete userinfo.pass;
       if(res.id === room.player1) {
-        console.log('p1 is ready');
-        room.p1Ready    = true;
+        // Is this the first time we connect?
+        if(!room.p1Ready) {
+          console.log('p1 is ready');
+          room.p1Ready     = true;
+          room.p1HP        = res.hp;
+          room.p1CurrentHP = res.hp;
+          room.p1Userinfo  = userinfo;
+        }
+
+        // It's a reconnect, just refresh socket
         room.p1Socket   = socket;
-        room.p1HP       = res.hp;
-        room.p1Userinfo = userinfo;
       } else {
-        console.log('p2 is ready');
-        room.p2Ready    = true;
+        // Is this the first time we connect?
+        if(!room.p2Ready) {
+          console.log('p2 is ready');
+          room.p2Ready     = true;
+          room.p2HP        = res.hp;
+          room.p2CurrentHP = res.hp;
+          room.p2Userinfo  = userinfo;
+        }
+
+        // It's a reconnect, just refresh socket
         room.p2Socket   = socket;
-        room.p2HP       = res.hp;
-        room.p2Userinfo = userinfo;
       }
 
       if(!room.turn) {
@@ -58,11 +70,19 @@ function handleSocket(socket, db) {
       if(room.p1Ready && room.p2Ready) {
         console.log('begin game');
         var playersinfo = {
-          p1: room.p1Userinfo,
-          p2: room.p2Userinfo
+          p1: {
+            hp: room.p1HP,
+            currentHP: room.p1CurrentHP,
+            userinfo: room.p1Userinfo
+          },
+          p2: {
+            hp: room.p2HP,
+            currentHP: room.p2CurrentHP,
+            userinfo: room.p2Userinfo
+          }
         };
-        room.p1Socket.emit('game/begin', room.p1Userinfo, playersinfo, room.turn);
-        room.p2Socket.emit('game/begin', room.p2Userinfo, playersinfo, room.turn);
+        room.p1Socket.emit('game/begin', 'p1', playersinfo, room.turn);
+        room.p2Socket.emit('game/begin', 'p2', playersinfo, room.turn);
         console.log('game begin, turn is', room.turn, 'room info:', room);
       } else {
         // Only one player is ready, wait for the second
@@ -96,24 +116,24 @@ function handleSocket(socket, db) {
     // Emit attacked event and change turn
     if(room.turn === 'p1') {
       console.log('p1 attacked p2', damage, enemy, jutsu);
-      room.p2Socket.emit('game/attacked', damage, enemy, jutsu);
       room.turn = 'p2';
-      room.p2HP = room.p2HP - damage;
+      room.p2CurrentHP = room.p2CurrentHP - damage;
+      room.p2Socket.emit('game/attacked', damage, room.p2CurrentHP, jutsu);
     } else {
       console.log('p2 attacked p1', damage, enemy, jutsu);
-      room.p1Socket.emit('game/attacked', damage, enemy, jutsu);
       room.turn = 'p1';
-      room.p1HP = room.p1HP - damage;
+      room.p1CurrentHP = room.p1CurrentHP - damage;
+      room.p1Socket.emit('game/attacked', damage, room.p1CurrentHP, jutsu);
     }
     console.log(enemy, 'takes', damage, 'damage');
 
-    if(room.p1HP <= 0) {
+    if(room.p1CurrentHP <= 0) {
       // Emit turn change
       room.p1Socket.emit('game/game-over', 'p2 wins');
       room.p2Socket.emit('game/game-over', 'p2 wins');
 
       // TODO: Destroy room
-    } else if(room.p2HP <= 0) {
+    } else if(room.p2CurrentHP <= 0) {
       room.p1Socket.emit('game/game-over', 'p1 wins');
       room.p2Socket.emit('game/game-over', 'p1 wins');
 

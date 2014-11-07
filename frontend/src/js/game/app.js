@@ -43,9 +43,9 @@ define([
       });
 
       // Got attacked!
-      this.layout.on('server/attacked', function (damage, enemy, jutsu) {
-        console.log('Got attacked!', damage, enemy, jutsu);
-        self.layout.trigger('ui/attacked', damage);
+      this.layout.on('server/attacked', function (damage, currentHP, jutsu) {
+        console.log('Got attacked!', damage, currentHP, jutsu);
+        self.layout.trigger('ui/attacked', damage, currentHP);
       });
 
       // When the server updates the turn, send correct UI event
@@ -59,18 +59,19 @@ define([
 
       // When the game begins, hide the overlay and if it's the player turn
       // display jutsus, if not, hide.
-      this.layout.on('server/begin', function (userinfo, players, turn) {
+      this.layout.on('server/begin', function (player_num, players, turn) {
         console.log('Game begin info got! Current game state:', players);
-        self.user = new User({ id: userinfo.id });
+
+        // Get the local player data
+        var user = players[player_num];
+        // Fetch player info and jutsus from the API
+        self.user = new User({ id: user.userinfo.id });
         self.user.fetch().then(function () {
+          self.user.set('currentHP', user.currentHP);
+          console.log('loaded user', self.user);
           self.layout.trigger('ws/user-loaded', self.user);
           self.renderViews();
-
-          if((+self.user.get('id')) === (+players.p1.id)) {
-            self.player = 'p1';
-          } else {
-            self.player = 'p2';
-          }
+          self.player = player_num;
 
           console.log('turn is', turn, 'and im', self.player);
           if(turn === self.player) {

@@ -22,13 +22,13 @@ define(['jquery', 'backbone', 'collections/jutsus'], function ($, Backbone, Juts
 
     defaults: {
       'id'        : 0,
-      'name'      : 'gosukiwi',
+      'user'      : 'gosukiwi',
       'str'       : 10,
       'agi'       : 10,
       'int'       : 10,
       'chakra'    : 'water',
       'hp'        : 2500,
-      'currentHp' : 1600,
+      'currentHP' : 2500,
       'level'     : 1,
       'jutsus'    : []
     }

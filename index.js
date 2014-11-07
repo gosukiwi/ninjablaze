@@ -1,5 +1,8 @@
 'use strict';
 
+// NINJA BLAZE
+// Website entry point
+// ---------------------------------------------------------------------------
 var express     = require('express');
 var app         = express();
 var http        = require('http').Server(app);
@@ -52,7 +55,7 @@ app.use('/', jutsuRouter);
 // Websockets
 // Eventually they could go into their own node instance if needed.
 // ---------------------------------------------------------------------------
-require('./websocket/index')(http);
+require('./websockets/index')(http);
 
 // Start server on port 3000
 // ---------------------------------------------------------------------------

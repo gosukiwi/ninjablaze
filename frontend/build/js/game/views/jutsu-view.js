@@ -10,14 +10,13 @@ define(['backbone', 'underscore', 'text!templates/info.ejs'],
   return Backbone.View.extend({
 
     initialize: function () {
-      var self = this;
-      this.layout.on('ui/select-jutsu', function (jutsu) {
-        self.model.set(jutsu.toJSON());
-      });
-
+      this.listenTo(this.layout, 'ui/select-jutsu', this.selectJutsu);
       this.listenTo(this.layout, 'ui/leave-turn', this.leaveTurn);
-
       this.listenTo(this.model, 'change', this.jutsuChanged);
+    },
+
+    selectJutsu: function (jutsu) {
+      this.model.set(jutsu.toJSON());
     },
 
     leaveTurn: function () {
