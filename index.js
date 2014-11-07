@@ -11,7 +11,7 @@ var dbal        = require('./lib/dbal-mysql/src/middleware');
 
 // Configuration
 // ---------------------------------------------------------------------------
-app.set('views', __dirname + '/views');
+app.set('views', __dirname + '/templates');
 app.set('view engine', 'jade');
 
 // Middleware
@@ -52,7 +52,7 @@ app.use('/', jutsuRouter);
 // Websockets
 // Eventually they could go into their own node instance if needed.
 // ---------------------------------------------------------------------------
-require('./ws/index')(http);
+require('./websocket/index')(http);
 
 // Start server on port 3000
 // ---------------------------------------------------------------------------
