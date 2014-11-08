@@ -11,7 +11,9 @@ define([
       'views/jutsu-menu-view', 
       'views/hp-view', 
       'views/jutsu-view',
-      'models/user'
+      'views/log-view',
+      'models/user',
+      'collections/log-messages'
     ], 
     function (
       $, 
@@ -22,7 +24,9 @@ define([
       JutsuMenuView, 
       HPView, 
       JutsuView, 
-      User
+      LogView,
+      User,
+      LogMessages
 ) {
   'use strict';
 
@@ -57,16 +61,15 @@ define([
         window.location = '/lobby';
       });
 
-      // Got attacked! For now just ignore the justu parameter
-      //this.layout.on('server/attacked', function (damage, currentHP/*, jutsu*/) {
-      //  self.layout.trigger('ui/attacked', damage, currentHP);
-      //});
-      
       this.layout.on('server/turn-finished', function (state) {
         // First do animations and display messages
         console.log('Turn ended! The state is', state);
         var playerstate = state[self.player];
         self.layout.trigger('ui/attacked', playerstate.damageDealt, playerstate.currentHP);
+
+        // Add log messages
+        var firstAttackMessage = 'First player delt ' + state[state.first].damageDealt + ' damage';
+        self.layout.trigger('ui/log-message', { type: 'normal', message: firstAttackMessage });
 
         // Finally enter turn again
         self.layout.trigger('ui/enter-turn');
@@ -115,6 +118,12 @@ define([
       this.layout.add(JutsuMenuView, {
         el: '#jutsu-menu',
         collection: this.user.jutsus
+      });
+
+      var startingLog = new LogMessages([{ type: 'info', message: 'Loading...' }]);
+      this.layout.add(LogView, {
+        el: '.log',
+        collection: startingLog
       });
 
       this.layout.add(HPView, {

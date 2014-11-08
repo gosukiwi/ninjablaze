@@ -1,14 +1,13 @@
 /**
- * Current game state
+ * A log message
  */
 define(['jquery', 'backbone'], function ($, Backbone) {
   'use strict';
 
   return Backbone.Model.extend({
     defaults: {
-      currentJutsu: null,
-      player1: null,
-      player2: null
+      type:    'normal',
+      message: ''
     }
   });
 });

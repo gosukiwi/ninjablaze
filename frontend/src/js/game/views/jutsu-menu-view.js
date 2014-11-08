@@ -14,7 +14,6 @@ define(['backbone', 'underscore', 'views/jutsu-menu-item-view'],
     },
 
     enable: function () {
-      console.log('show menu');
       this.$el.show();
     },
 

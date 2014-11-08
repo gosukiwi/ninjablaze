@@ -24,3 +24,4 @@ How to hack on Ninja Blaze:
  * Add logging, mostly for the server events
  * Add something like Dodge? More mechanics, add a beforeturn action for venom procs and such.
  * Create some kind of configuration file
+ * Emotes, like in Hearthstone

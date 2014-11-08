@@ -183,6 +183,7 @@ function handleSocket(socket, db) {
       // TODO: If they are equal, make it random
       var first  = room.p1Userinfo.agi > room.p2Userinfo.agi ? 'p1' : 'p2';
       var second = first === 'p1' ? 'p2' : 'p1';
+
       // Did any of the players die? Check for the one who got attacked first
       if(room[second + 'CurrentHP'] <= 0) {
         // Game over! The winner is "first", the first who attacked.
@@ -205,7 +206,8 @@ function handleSocket(socket, db) {
             currentHP: room.p2CurrentHP,
             jutsuUsed: room.state.p2.jutsu,
             damageDealt: room.state.p2.damage
-          }
+          },
+          first: first
         };
         room.p1Socket.emit('game/turn-finished', state);
         room.p2Socket.emit('game/turn-finished', state);
