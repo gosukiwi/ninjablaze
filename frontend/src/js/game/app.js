@@ -13,7 +13,8 @@ define([
       'views/jutsu-view',
       'views/log-view',
       'models/user',
-      'collections/log-messages'
+      'collections/log-messages',
+      'animations/attack'
     ], 
     function (
       $, 
@@ -26,7 +27,8 @@ define([
       JutsuView, 
       LogView,
       User,
-      LogMessages
+      LogMessages,
+      attackAnimation
 ) {
   'use strict';
 
@@ -99,8 +101,13 @@ define([
             console.log('trigger leave turn');
             self.layout.trigger('ui/wait-turn');
           }
+
+          // TODO: Remove this
+          // Test animation for attack
+          attackAnimation($('#local-avatar'), $('#remote-avatar'));
         });
       });
+
 
       // Web Sockets
       // ---------------------------------------------------------------------
