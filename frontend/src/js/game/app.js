@@ -89,6 +89,8 @@ define([
           self.initializeViews();
           self.player = player_num;
 
+          self.layout.trigger('ui/log-message', { type: 'normal', message: 'Connected!' });
+
           console.log('status is', state[self.player]);
           if(state[self.player].status === 'waiting') {
             console.log('trigger enter turn');

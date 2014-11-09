@@ -2,9 +2,15 @@
 .duel {
   background: url('../img/bg-play.jpg') no-repeat 0 0;
   background-size: cover;
-  min-width: 980px;
   width: 100vw;
   height: 100vh;
+  min-width: 1360px;
+
+  h1,
+  h2,
+  h3 {
+    font-family: 'naruto';
+  }
 }
 
 /* layouts */
@@ -26,170 +32,176 @@
   text-align: right;
 }
 
-/* player UI module */
 .player-ui {
-  background-color: rgba(red(@grey), green(@grey), blue(@grey), 0.85);
-  border-top: 1px solid black;
-  color: white;
+  background: url('../img/scroll-bg.png') repeat-x 0 0;
+  position: relative;
+  height: 142px;
+  overflow: hidden;
+  padding: 10px;
 
-  span {
-    font-size: 0.9em;
-    font-family: 'Open Sans', sans-serif;
-  }
+  .hp {
+    position: relative; // always on top, overrides the &:before
+    font-family: naruto;
+    margin-top: 10px;
 
-  .hp-info {
-    display: block;
-    margin: 10px 15px;
-    text-align: right;
-  }
-
-  .user-avatar {
-    width: 100px;
-    height: 100px;
-    display: block;
-    margin: 20px auto;
-  }
-
-  .info-panel {
-    .jutsu-name {
-      display: block;
-      font-family: 'permanent marker', cursive;
+    h1 {
       font-size: 1.5em;
-    }
-
-    .jutsu-element {
-      font-family: 'Open Sans', sans-serif;
-      display: block;
-      font-size: 1.3em;
-      font-weight: 300;
-      text-transform: capitalize;
-    }
-
-    .jutsu-damage {
-      font-family: 'Open Sans', sans-serif;
-      display: block;
-      text-transform: lowercase;
-      padding: 10px 0;
-    }
-
-    .jutsu-description {
-      font-family: 'Open Sans', sans-serif;
-      margin: 0 0 10px;
-    }
-
-    .jutsu-buttons {
-      list-style: none;
-      padding: 0;
-      margin: 30px 0;
-      text-align: center;
-
-      li {
-        display: inline-block;
-        padding: 0;
-        margin: 0;
-
-        a {
-          background-color: @green;
-          text-decoration: none;
-          text-transform: uppercase;
-          font-family: 'Open Sans', sans-serif;
-          color: white;
-          padding: 5px 20px;
-          font-size: 0.9em;
-
-          &:hover {
-            background-color: #333;
-          }
-        }
-      }
+      padding: 5px 0 0;
     }
   }
 
-  .game-options {
+  &:before {
+    content: ' ';
+    display: block;
+    background: url('../img/scroll-left.png') no-repeat 0 0;
     position: absolute;
+    top: 0;
+    left: 0;
+    height: 142px;
+    width: 150px;
+  }
+
+  &:after {
+    content: ' ';
+    display: block;
+    background: url('../img/scroll-right.png') no-repeat 0 1px;
+    position: absolute;
+    top: 0;
     right: 0;
-    top: 10px;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-
-    li {
-      padding: 0;
-      margin: 9px 0;
-
-      a {
-        font-family: 'permanent marker', cursive;
-        color: white;
-        background-color: @green;
-        padding: 10px 30px;
-        text-decoration: none;
-        text-transform: uppercase;
-        border-radius: 25px;
-        display: block;
-        transition: background-color 0.1s;
-
-        &:hover {
-          background-color: #333;
-        }
-      }
-    }
-  }
-
-  .jutsu-menu {
-    list-style: none;
-
-    li {
-      padding: 0;
-      margin: 10px;
-
-      a {
-        display: inline-block;
-        text-decoration: none;
-        color: white;
-        padding: 3px 10px;
-        background-color: @green;
-        min-width: 250px;
-        font-family: 'Open Sans', sans-serif;
-
-        &:hover {
-          background-color: #333;
-        }
-      }
-    }
-  }
-
-  img {
-    padding: 0;
-    margin: 5px;
-    border-radius: 80px;
-    border: 5px solid @green;
-  }
-
-  h1 {
-    font-family: 'permanent marker', cursive;
-    color: white;
-    padding: 0 10px;
-    margin: 0 0 10px;
-    font-weight: 300;
-    text-transform: uppercase;
+    height: 142px;
+    width: 170px;
   }
 }
 
-.is-player-ui-waiting {
-  .jutsu-menu li a {
-    background-color: #333;
-    cursor: not-allowed;
+.hp-info {
+  display: block;
+  margin: 10px 15px;
+  text-align: right;
+}
+
+.jutsu-menu {
+  position: relative; // override :after
+  z-index: 2000;
+  list-style: none;
+  margin: 15px 0 0;
+  padding: 0;
+  font-size: 80%;
+  padding-right: 35px;
+
+  li {
+    display: inline-block;
+    width: 49%;
+    box-sizing: border-box;
+    margin-bottom: 3px;
+    margin-right: 3px;
+    overflow: hidden;
+
+    a {
+      text-transform: uppercase;
+      display: block;
+      background-color: #444;
+      color: white;
+      text-decoration: none;
+      padding: 5px;
+
+      &:hover {
+        background-color: #777;
+      }
+    }
+  }
+}
+
+.info-panel {
+  text-align: center;
+  position: relative;
+  padding-top: 15px;
+  font-size: 90%;
+
+  .jutsu-name {
+    font-family: naruto;
+    display: block;
+    text-align: center;
+    margin: 5px 0 5px;
+    font-size: 140%;
+  }
+
+  .jutsu-description {
+    margin: 5px 0 0;
+  }
+
+  .jutsu-buttons {
+    margin: 5px 0 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: inline-block;
+      width: 100px;
+
+      a {
+        text-transform: uppercase;
+        display: block;
+        background-color: #444;
+        color: white;
+        text-decoration: none;
+        padding: 5px 0;
+
+        &:hover {
+          background-color: #777;
+        }
+      }
+    }
+  }
+
+  .seal {
+    width: 100%;
+    position: absolute;
+    top: 15px;
+    left: 0;
+    text-align: center;
+  }
+
+  .user-avatar {
+    width: 100%;
+    position: absolute;
+    top: 35px;
+    left: 0;
+    text-align: center;
+
+    img {
+      width: 60px;
+      height: auto;
+      border-radius: 25px;
+    }
   }
 }
 
 /* Game log */
 .log {
   position: absolute;
-  top: 10vh;
-  right: 0;
-  height: 50vh;
+  top: 170px;
+  bottom: 170px;
+  right: 20px;
   width: 300px;
   background-color: #f3f3f3;
+  overflow: auto;
+  border: 3px solid black;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      padding: 5px;
+      font-size: 80%;
+      border-bottom: 1px solid #999;
+
+      &:nth-child(even) {
+        background-color: #ddd;
+      }
+    }
+  }
 }
 
 
