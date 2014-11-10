@@ -13,7 +13,7 @@ define(['tweenr'], function (tweenr) {
       $from.css({ transform: 'translateY(' + val + 'px)' });
     }
 
-    tweenr().chain([
+    return tweenr().chain([
       { 
         props: [{ from: 0, to: 10 }],
         dur: 100,
@@ -29,9 +29,6 @@ define(['tweenr'], function (tweenr) {
         dur: 1000,
         fn:  'square'
       },
-    ], render)
-    .then(function () {
-      console.log('chain ended!');
-    });
+    ], render);
   };
 });

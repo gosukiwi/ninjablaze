@@ -69,12 +69,25 @@ define([
         var playerstate = state[self.player];
         self.layout.trigger('ui/attacked', playerstate.damageDealt, playerstate.currentHP);
 
-        // Add log messages
-        var firstAttackMessage = 'First player delt ' + state[state.first].damageDealt + ' damage';
-        self.layout.trigger('ui/log-message', { type: 'normal', message: firstAttackMessage });
+        // TODO: Remove this
+        // Test animation for attack
+        attackAnimation($('#local-avatar'), $('#remote-avatar'))
+        .then(function () {
+          // Add log messages
+          var message = 'First player delt ' + state[state.first].damageDealt + ' damage';
+          self.layout.trigger('ui/log-message', { type: 'normal', message: message });
 
-        // Finally enter turn again
-        self.layout.trigger('ui/enter-turn');
+          // Send next animation
+          return attackAnimation($('#remote-avatar'), $('#local-avatar'));
+        })
+        .then(function () {
+          // Add log messages
+          var message = 'Second player attacked!';
+          self.layout.trigger('ui/log-message', { type: 'normal', message: message });
+
+          // Finally enter turn again
+          self.layout.trigger('ui/enter-turn');
+        });
       });
 
       // When the game begins, hide the overlay and if it's the player turn
@@ -101,10 +114,6 @@ define([
             console.log('trigger leave turn');
             self.layout.trigger('ui/wait-turn');
           }
-
-          // TODO: Remove this
-          // Test animation for attack
-          attackAnimation($('#local-avatar'), $('#remote-avatar'));
         });
       });
 
