@@ -31,6 +31,7 @@
     "jquery-cookie": "~1.4.1",
     "requirejs": "~2.1.14",
     "jquery": "1.11",
-    "requirejs-text": "~2.0.12"
+    "requirejs-text": "~2.0.12",
+    "tweenr": "*"
   }
 }

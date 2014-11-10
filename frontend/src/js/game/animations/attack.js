@@ -1,7 +1,7 @@
 /**
  * An attack animation, it moves the fromElement up to the toElement and back.
  */
-define(['helpers/tweenr/tweenr'], function (tweenr) {
+define(['tweenr'], function (tweenr) {
   'use strict';
 
   return function ($from, $to) {
@@ -13,28 +13,25 @@ define(['helpers/tweenr/tweenr'], function (tweenr) {
       $from.css({ transform: 'translateY(' + val + 'px)' });
     }
 
-    tweenr().path([
+    tweenr().chain([
       { 
+        props: [{ from: 0, to: 10 }],
         dur: 100,
-        from: 0,
-        to: 10,
-        fn: 'square'
+        fn:  'square'
       },
       { 
-        dur: 1000,
-        from: 10,
-        to: diff[1],
-        fn: 'square'
+        props: [{ from: 10, to: diff[1] }],
+        dur: 700,
+        fn:  'square'
       },
       { 
+        props: [{ from: diff[1], to: 0 }],
         dur: 1000,
-        from: diff[1],
-        to: 0,
-        fn: 'square'
-      }
+        fn:  'square'
+      },
     ], render)
     .then(function () {
-      console.log('path ended!');
+      console.log('chain ended!');
     });
   };
 });

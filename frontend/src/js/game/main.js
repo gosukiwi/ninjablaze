@@ -12,7 +12,8 @@ require.config({
     'io': '/socket.io/socket.io.js',
     'jquery-cookie': '../../vendor/jquery-cookie/jquery.cookie',
     'backbone-modalview': '../../vendor/backbone-modalview/backbone.modalview',
-    'helpers': '../helpers/'
+    'helpers': '../helpers/',
+    'tweenr': '../../vendor/tweenr/dist/tweenr-full',
   }
 });
 
