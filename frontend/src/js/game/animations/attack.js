@@ -16,17 +16,17 @@ define(['tweenr'], function (tweenr) {
     return tweenr().chain([
       { 
         props: [{ from: 0, to: 10 }],
-        dur: 100,
+        dur: 50,
         fn:  'square'
       },
       { 
         props: [{ from: 10, to: diff[1] }],
-        dur: 700,
+        dur: 500,
         fn:  'square'
       },
       { 
         props: [{ from: diff[1], to: 0 }],
-        dur: 1000,
+        dur: 700,
         fn:  'square'
       },
     ], render);
