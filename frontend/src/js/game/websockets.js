@@ -19,13 +19,13 @@ define(['io', 'jquery-cookie'], function (io) {
       // Save the pubsub instance, we use this to communicate with the Backbone
       // views
       this.pubsub = pubsub;
-      this.subscribe();
+      this.subscribeUI();
 
-      // Bind all socket events in this.socketEvents on connection
+      // Bind all socket events in this.subscribeWS on connection
       var self = this;
       this.socket = io();
       this.socket.on('connect', function () {
-        self.socketEvents(self.socket);
+        self.subscribeWS(self.socket);
       });
 
       // Report user as ready
@@ -36,7 +36,8 @@ define(['io', 'jquery-cookie'], function (io) {
       });
     },
 
-    subscribe: function () {
+    // subscribe to UI events
+    subscribeUI: function () {
       var self = this;
 
       // The user wants to attack! Emit a socket event
@@ -47,7 +48,7 @@ define(['io', 'jquery-cookie'], function (io) {
 
     // Handle all socket events in here, and using pubsub all views can
     // subscribe as needed.
-    socketEvents: function (socket) {
+    subscribeWS: function (socket) {
       var self = this;
 
       // The game can begin! players is a pojo with both players, and turn is
