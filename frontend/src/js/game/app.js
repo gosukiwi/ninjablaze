@@ -14,7 +14,7 @@ define([
       'views/log-view',
       'models/user',
       'collections/log-messages',
-      //'animations/attack'
+      'animations/attack'
     ], 
     function (
       $, 
@@ -27,12 +27,12 @@ define([
       JutsuView, 
       LogView,
       User,
-      LogMessages
-      //attackAnimation
+      LogMessages,
+      attackAnimation
 ) {
   'use strict';
 
-  function setupGame (player_num, players, state) {
+  function setupGame(player_num, players, state) {
     // Get the local player data
     var user = players[player_num];
 
@@ -58,17 +58,13 @@ define([
 
       // Save the players numbers
       app.player = player_num;
-      //app.enemy  = player_num === 'p1' ? 'p2' : 'p1';
 
       // Log a welcome message
       app.layout.trigger('ui/log-message', { type: 'normal', message: 'Connected!' });
 
-      console.log('status is', state[app.player]);
       if(state[app.player].status === 'waiting') {
-        console.log('trigger enter turn');
         app.layout.trigger('ui/enter-turn');
       } else {
-        console.log('trigger leave turn');
         app.layout.trigger('ui/wait-turn');
       }
     });
@@ -93,57 +89,56 @@ define([
   }
 
   function doTurn(state) {
-        // First do animations and display messages
-        console.log('Turn ended! The state is', state);
-        var playerstate = state[app.player];
+    // First do animations and display messages
+    console.log('Turn ended! The state is', state);
+    var playerstate = state[app.player];
+    var enemystate  = state[app.player === 'p1' ? 'p2' : 'p1'];
+
+    // TODO: Remove this
+    // Test animation for attack
+    attackAnimation($('#local-avatar'), $('#remote-avatar'))
+    .then(function () {
+      // Add log messages
+      var message = 'First player delt ' + state[state.first].damageDealt + ' damage';
+      app.layout.trigger('ui/log-message', { type: 'normal', message: message });
+
+      if(state.first === app.user) {
         app.user.set('currentHP', playerstate.currentHP);
-
-        // enemy
-        var enemystate = state[app.player === 'p1' ? 'p2' : 'p1'];
+      } else {
         app.enemy.set('currentHP', enemystate.currentHP);
-
-        // TODO: Remove this
-        // Test animation for attack
-        //attackAnimation($('#local-avatar'), $('#remote-avatar'))
-        //.then(function () {
-        //  // Add log messages
-        //  var message = 'First player delt ' + state[state.first].damageDealt + ' damage';
-        //  app.layout.trigger('ui/log-message', { type: 'normal', message: message });
-
-        //  // Send next animation
-        //  return attackAnimation($('#remote-avatar'), $('#local-avatar'));
-        //})
-        //.then(function () {
-        //  // Add log messages
-        //  var message = 'Second player attacked!';
-        //  app.layout.trigger('ui/log-message', { type: 'normal', message: message });
-
-        //  // Finally enter turn again
-        //  app.layout.trigger('ui/enter-turn');
-        //});
-        
-        app.layout.trigger('ui/enter-turn');
       }
 
-  // Initialize the app in this anonymous object
+      // Send next animation
+      return attackAnimation($('#remote-avatar'), $('#local-avatar'));
+    })
+    .then(function () {
+      // Add log messages
+      var message = 'Second player attacked!';
+      app.layout.trigger('ui/log-message', { type: 'normal', message: message });
+
+      if(state.first !== app.user) {
+        app.user.set('currentHP', playerstate.currentHP);
+      } else {
+        app.enemy.set('currentHP', enemystate.currentHP);
+      }
+
+      // Finally enter turn again
+      app.layout.trigger('ui/enter-turn');
+    });
+
+    app.layout.trigger('ui/enter-turn');
+  }
+
+  // Application obejct, handle views, web sockets and layout events
   var app = {
 
+    // set up layout, subscribe to it's events and initialize websockets 
     initialize: function () {
       // Layout definition
       this.layout = new Layout();
 
-      // All events in the "server" namespace are received from the server,
-      // others are generated locally in the UI.
-      this.layout.on('ui/attack', attack);
-
-      // Game over! GG.
-      this.layout.on('server/game-over', gameOver);
-
-      this.layout.on('server/turn-finished', doTurn);
-
-      // When the game begins, hide the overlay and if it's the player turn
-      // display jutsus, if not, hide.
-      this.layout.on('server/begin', setupGame);
+      // Subscribe to layout events
+      this.subscribe();
 
       // Web Sockets
       // ---------------------------------------------------------------------
@@ -152,10 +147,28 @@ define([
       WebSockets.initialize(this.layout);
     },
 
+    subscribe: function () {
+      // All events in the "server" namespace are received from the server,
+      // others are generated locally in the UI.
+      this.layout.on('ui/attack', attack);
+
+      // Game over! GG.
+      this.layout.on('server/game-over', gameOver);
+
+      // The turn is over, process it!
+      this.layout.on('server/turn-finished', doTurn);
+
+      // When the game begins, hide the overlay and if it's the player turn
+      // display jutsus, if not, hide.
+      this.layout.on('server/begin', setupGame);
+    },
+
     // Views
     // ---------------------------------------------------------------------
+    // When the game is ready, a websocket event will be triggered to render the
+    // views, this function will be used to initialize them.
     initViews: function () {
-      this.layout.add(JutsuView, { 
+      this.layout.add(JutsuView, {
         el: '#info-panel',
         model: new Backbone.Model({})
       });
