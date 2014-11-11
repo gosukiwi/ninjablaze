@@ -9,7 +9,7 @@ define(['backbone', 'underscore', 'text!templates/hp.ejs'],
   return Backbone.View.extend({
 
     initialize: function () {
-      this.listenTo(this.layout, 'ui/attacked', this.attacked);
+      this.listenTo(this.layout, 'ui/got-attacked', this.attacked);
       this.listenTo(this.model, 'change:currentHP', this.update);
     },
 

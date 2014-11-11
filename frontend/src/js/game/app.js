@@ -14,7 +14,7 @@ define([
       'views/log-view',
       'models/user',
       'collections/log-messages',
-      'animations/attack'
+      //'animations/attack'
     ], 
     function (
       $, 
@@ -27,11 +27,12 @@ define([
       JutsuView, 
       LogView,
       User,
-      LogMessages,
-      attackAnimation
+      LogMessages
+      //attackAnimation
 ) {
   'use strict';
 
+  // Initialize the app in this anonymous object
   return {
 
     initialize: function () {
@@ -67,27 +68,33 @@ define([
         // First do animations and display messages
         console.log('Turn ended! The state is', state);
         var playerstate = state[self.player];
-        self.layout.trigger('ui/attacked', playerstate.damageDealt, playerstate.currentHP);
+        self.user.set('currentHP', playerstate.currentHP);
+
+        // enemy
+        var enemystate = state[self.player === 'p1' ? 'p2' : 'p1'];
+        self.enemy.set('currentHP', enemystate.currentHP);
 
         // TODO: Remove this
         // Test animation for attack
-        attackAnimation($('#local-avatar'), $('#remote-avatar'))
-        .then(function () {
-          // Add log messages
-          var message = 'First player delt ' + state[state.first].damageDealt + ' damage';
-          self.layout.trigger('ui/log-message', { type: 'normal', message: message });
+        //attackAnimation($('#local-avatar'), $('#remote-avatar'))
+        //.then(function () {
+        //  // Add log messages
+        //  var message = 'First player delt ' + state[state.first].damageDealt + ' damage';
+        //  self.layout.trigger('ui/log-message', { type: 'normal', message: message });
 
-          // Send next animation
-          return attackAnimation($('#remote-avatar'), $('#local-avatar'));
-        })
-        .then(function () {
-          // Add log messages
-          var message = 'Second player attacked!';
-          self.layout.trigger('ui/log-message', { type: 'normal', message: message });
+        //  // Send next animation
+        //  return attackAnimation($('#remote-avatar'), $('#local-avatar'));
+        //})
+        //.then(function () {
+        //  // Add log messages
+        //  var message = 'Second player attacked!';
+        //  self.layout.trigger('ui/log-message', { type: 'normal', message: message });
 
-          // Finally enter turn again
-          self.layout.trigger('ui/enter-turn');
-        });
+        //  // Finally enter turn again
+        //  self.layout.trigger('ui/enter-turn');
+        //});
+        
+        self.layout.trigger('ui/enter-turn');
       });
 
       // When the game begins, hide the overlay and if it's the player turn
@@ -97,13 +104,32 @@ define([
 
         // Get the local player data
         var user = players[player_num];
+
+        // Enemy data, in the format
+        // {
+        //   hp: int,
+        //   currentHP: int,
+        //   userinfo: object
+        // }
+        var enemy = players[player_num === 'p1' ? 'p2' : 'p1'];
+        self.enemy = new User({ 
+          id: enemy.userinfo.id,
+          user: enemy.userinfo.user,
+          hp: enemy.hp,
+          currentHP: enemy.currentHP
+        });
+
         // Fetch player info and jutsus from the API
         self.user = new User({ id: user.userinfo.id });
         self.user.fetch().then(function () {
           self.user.set('currentHP', user.currentHP);
           self.initializeViews();
-          self.player = player_num;
 
+          // Save the players numbers
+          self.player = player_num;
+          //self.enemy  = player_num === 'p1' ? 'p2' : 'p1';
+
+          // Log a welcome message
           self.layout.trigger('ui/log-message', { type: 'normal', message: 'Connected!' });
 
           console.log('status is', state[self.player]);
@@ -117,7 +143,6 @@ define([
         });
       });
 
-
       // Web Sockets
       // ---------------------------------------------------------------------
       // Initialize web sockets, pass the layout as argument for the pubsub
@@ -125,9 +150,9 @@ define([
       WebSockets.initialize(this.layout);
     },
 
-    // Get current user and render all the views for that user
+    // Views
+    // ---------------------------------------------------------------------
     initializeViews: function () {
-      console.log('render views');
       this.layout.add(JutsuView, { 
         el: '#info-panel',
         model: new Backbone.Model({})
@@ -144,9 +169,16 @@ define([
         collection: startingLog
       });
 
+      // Local player HP view
       this.layout.add(HPView, {
         el: '#player-1-hp',
         model: this.user
+      });
+
+      // Remote player HP view
+      this.layout.add(HPView, {
+        el: '#enemy-hp',
+        model: this.enemy
       });
 
       this.layout.render();
