@@ -14,13 +14,13 @@ define(['backbone', 'underscore', 'views/log-message-view'],
     },
 
     onNewMessage: function (message) {
-      console.log(this);
       this.collection.add(message);
     },
 
     add: function (message) {
       var view = new LogMessageView({ model: message });
       this.$el.find('ul').append(view.render().el);
+      this.$el.scrollTop(this.$el.outerHeight());
     },
 
     render: function () {

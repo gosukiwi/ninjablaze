@@ -53,16 +53,42 @@ function handleSocket(socket, db) {
           p1: {
             status: 'waiting',
             jutsu: 'none',
-            damage: 0//,
+            damageTaken: 0,
+            effectsDamage: 0,
+            effects: {
+              trap: {
+                duration: 0,
+              },
+              poison: {
+                duration: 0,
+                damage: 0,
+              },
+              buff: {
+                dodge: 0,
+                damage: 0,
+              }
+            }//,
             // TODO: Store HP here
             //currentHP: res.hp
           },
           p2: {
             status: 'waiting',
             jutsu: 'none',
-            damage: 0//,
-            // TODO: Store HP here
-            //currentHP: res.hp
+            damageTaken: 0,
+            effectsDamage: 0,
+            effects: {
+              trap: {
+                duration: 0,
+              },
+              poison: {
+                duration: 0,
+                damage: 0,
+              },
+              buff: {
+                dodge: 0,
+                damage: 0,
+              }
+            }
           }
         };
       } else {
@@ -150,34 +176,36 @@ function handleSocket(socket, db) {
       return;
     }
 
-    console.log('Try to attack with', jutsu);
     if(!jutsu) {
       console.log('select a jutsu! cannot attack');
       return;
     }
 
-    var num    = (+room.p1Userinfo.id) === (+player.id) ? 'p1' : 'p2';
-    var enemy  = (+room.p1Userinfo.id) === (+player.id) ? room.p2Userinfo : room.p1Userinfo;
-    // Get the enemy userinfo and calculate the effective jutsu damage
-    var damage = mechanics.attack(player, enemy, jutsu);
-    if(room.state[num].status === 'waiting') {
-      console.log('Registered!', num, 'is ready');
-      room.state[num].status = 'ready';
-      room.state[num].jutsu = jutsu;
-      room.state[num].damage = damage;
-    } else {
-      // Already attacked?
+    var num       = (+room.p1Userinfo.id) === (+player.id) ? 'p1' : 'p2';
+    var enemy_num = num === 'p1' ? 'p2' : 'p1';
+    var enemy     = room[enemy_num + 'Userinfo'];
+
+    console.log(num, 'attacked with', jutsu.name);
+
+    // Already attacked?
+    if(room.state[num].status !== 'waiting') {
       // TODO: Send no turn error and respond in frontend.
       console.log('You have already attacked!');
       return;
     }
 
-    if(room.state.p1.status === 'ready' && room.state.p2.status === 'ready') {
-      console.log('Both players are ready according to state', room.state);
+    // Update room state
+    room.state[num].status = 'ready';
+    room.state[num].jutsu  = jutsu;
 
+    // Set enemy state
+    room.state[enemy_num].damageTaken   = mechanics.attack(player, enemy, jutsu);
+    room.state[enemy_num].effectsDamage = mechanics.updateEffects(room.state[enemy_num].effects, jutsu);
+
+    if(room.state.p1.status === 'ready' && room.state.p2.status === 'ready') {
       // Process turn
-      room.p1CurrentHP = room.p1CurrentHP - room.state.p2.damage;
-      room.p2CurrentHP = room.p2CurrentHP - room.state.p1.damage;
+      room.p1CurrentHP = room.p1CurrentHP - room.state.p1.damageTaken - room.state.p1.effectsDamage;
+      room.p2CurrentHP = room.p2CurrentHP - room.state.p2.damageTaken - room.state.p2.effectsDamage;
 
       // Who is faster? The faster attacks first.
       // TODO: If they are equal, make it random
@@ -200,25 +228,28 @@ function handleSocket(socket, db) {
           p1: {
             currentHP: room.p1CurrentHP,
             jutsuUsed: room.state.p1.jutsu,
-            damageDealt: room.state.p1.damage
+            damageTaken: room.state.p1.damageTaken,
+            effectDamage: room.state.p1.effectsDamage,
           },
           p2: {
             currentHP: room.p2CurrentHP,
             jutsuUsed: room.state.p2.jutsu,
-            damageDealt: room.state.p2.damage
+            damageTaken: room.state.p2.damageTaken,
+            effectDamage: room.state.p2.effectsDamage,
           },
-          first: first
+          first: first,
+          second: second,
         };
         room.p1Socket.emit('game/turn-finished', state);
         room.p2Socket.emit('game/turn-finished', state);
 
         // Clean up state
         room.state.p1.status = 'waiting';
-        room.state.p1.jutsu  = 'none';
-        room.state.p1.damage = 0;
+        //room.state.p1.jutsu  = 'none';
+        //room.state.p1.damageTaken = 0;
         room.state.p2.status = 'waiting';
-        room.state.p2.jutsu  = 'none';
-        room.state.p2.damage = 0;
+        //room.state.p2.jutsu  = 'none';
+        //room.state.p2.damageTaken = 0;
       }
     }
 

@@ -40,7 +40,34 @@ var Mechanics = {
 
     // Effective damage dealt to defender, truncate to integer value
     return parseInt(damage * (1 - defended), 10);
-  }
+  },
+
+  // Updates the effects for a turn and apply new ones, returns damage taken
+  // this turn by effects.
+  updateEffects: function (effects, jutsu) {
+    var damageTaken = 0;
+
+    // Advance on turn on old effects
+    if(effects.trap.duration > 0) {
+      effects.trap.duration = effects.trap.duration - 1;
+    }
+
+    if(effects.poison.duration > 0) {
+      effects.poison.duration = effects.poison.duration - 1;
+      damageTaken = effects.poison.damage;
+    }
+
+    // Apply new effects
+    if(jutsu.effect_type === 'trap') {
+      effects.trap.duration = jutsu.effect_duration;
+    } else if(jutsu.effect_type === 'poison') {
+      effects.poison.duration = jutsu.effect_duration;
+      effects.poison.damage   = jutsu.effect_damage;
+      damageTaken             = jutsu.effect_damage;
+    }
+
+    return damageTaken;
+  },
 
 };
 

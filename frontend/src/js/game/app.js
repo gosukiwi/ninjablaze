@@ -32,6 +32,14 @@ define([
 ) {
   'use strict';
 
+  function getUserFromNumber(num) {
+    if(num === app.player) {
+      return app.user;
+    }
+
+    return app.enemy;
+  }
+
   function setupGame(player_num, players, state) {
     // Get the local player data
     var user = players[player_num];
@@ -94,15 +102,18 @@ define([
     var playerstate = state[app.player];
     var enemystate  = state[app.player === 'p1' ? 'p2' : 'p1'];
 
+    var firstPlayer  = getUserFromNumber(state.first);
+    var secondPlayer = getUserFromNumber(state.second);
+
     // TODO: Remove this
     // Test animation for attack
     attackAnimation($('#local-avatar'), $('#remote-avatar'))
     .then(function () {
       // Add log messages
-      var message = 'First player delt ' + state[state.first].damageDealt + ' damage';
+      var message = firstPlayer.get('user') + ' attacked with ' + state[state.first].jutsuUsed.name;
       app.layout.trigger('ui/log-message', { type: 'normal', message: message });
 
-      if(state.first === app.user) {
+      if(state.first === app.player) {
         app.user.set('currentHP', playerstate.currentHP);
       } else {
         app.enemy.set('currentHP', enemystate.currentHP);
@@ -113,10 +124,10 @@ define([
     })
     .then(function () {
       // Add log messages
-      var message = 'Second player attacked!';
+      var message = secondPlayer.get('user') + ' attacked with ' + state[state.second].jutsuUsed.name;
       app.layout.trigger('ui/log-message', { type: 'normal', message: message });
 
-      if(state.first !== app.user) {
+      if(state.second === app.player) {
         app.user.set('currentHP', playerstate.currentHP);
       } else {
         app.enemy.set('currentHP', enemystate.currentHP);

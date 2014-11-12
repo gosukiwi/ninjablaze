@@ -131,34 +131,43 @@ router.get('/users/:id', function (req, res) {
     user.jutsus = [
       {
         name: 'Gokakyou no jutsu',
-        damage: 20,
+        damage: 50,
         element: 'fire',
         type: 'ninjutsu',
-        description: 'Some desc...'
-
+        description: 'Throws a fireball at the enemy',
+        effect_type: 'none',
+        effect_duration: 0,
+        effect_damage: 0,
       },
       {
-        name: 'Replacemente jutsu',
+        name: 'Throw Poisonous Kunai',
         damage: 20,
         element: 0,
-        type: 'ninjutsu',
-        description: 'Some desc...'
-
+        type: 'taijutsu',
+        description: 'Throws a poisonous kunai',
+        effect_type: 'poison',
+        effect_duration: 2,
+        effect_damage: 20,
       },
       {
         name: 'Throw Kunai',
         damage: 20,
         element: 0,
         type: 'taijutsu',
-        description: 'Some desc...'
-
+        description: 'Throws a fireball at the enemy',
+        effect_type: 'none',
+        effect_duration: 0,
+        effect_damage: 0,
       },
       {
         name: 'Potato no jutsu',
-        damage: 20,
+        damage: 30,
         element: 0,
         type: 'genjutsu',
-        description: 'Some desc...'
+        description: 'Throws a fireball at the enemy',
+        effect_type: 'none',
+        effect_duration: 0,
+        effect_damage: 0,
       }
     ];
 
