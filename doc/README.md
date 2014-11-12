@@ -10,3 +10,4 @@ Of course everybody is welcome to see this documentation if they so please.
  * [Server setup](setup.md)
  * [Damage calculations](damage-calculation.md)
  * [Jutsus](jutsus.md)
+ * [Leveling Up](leveling-up.md)
