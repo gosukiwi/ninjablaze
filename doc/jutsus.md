@@ -160,3 +160,58 @@ Element: None
 Description: Quickly swings sword in a single, large, crescent moon-shaped arc
 
 # Genjutsu
+
+## Hair Trap
+Requires: 13 INT
+Damage: 20
+PP: 15
+Type: Genjutsu
+Range: Mid
+Element: None
+Description: Lengthen hair in order to trap the enemy and consume his body. Enemy will be trapped for one turn.
+
+## Dooms Door
+Requires: 14 INT
+Damage: 15
+PP: 15
+Type: Genjutsu
+Range: Mid
+Element: None
+Description: A portal is opened and thousands of venomous needles are thrown from the inside, hitting the enemy's body. Poison enemy for the next three turns.  
+ 
+## Crow Escape
+Requires: 15 INT
+Damage: 0
+PP: 15
+Type: Genjutsu
+Range: Mid
+Element: None
+Description: User's body vanishes into a flock of crows. Gain 80% dodge for the next.
+
+## In Bloom
+Requires: 17 INT
+Damage: 50
+PP: 15
+Type: Genjutsu
+Range: Short
+Element: None
+Description: A wild carnivorous plant bites the enemy. Absorves Taijutsu. 
+
+## Burned Army
+Requires: 19 INT
+Damage: 50
+PP: 15
+Type: Genjutsu
+Range: Mid
+Element: None
+Description: Burned corpses rise up and trap the enemy. Enemy will be trapped for two turns.
+
+## Maggots Invasion
+Requires: 20 INT
+Damage: 90
+PP: 15
+Type: Genjutsu
+Range: Mid
+Element: None
+Description: Maggots invade enemy's body and grow in his lungs.
+
