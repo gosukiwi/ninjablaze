@@ -3,6 +3,7 @@
 // NINJA BLAZE
 // Website entry point
 // ---------------------------------------------------------------------------
+var fs          = require('fs');
 var express     = require('express');
 var app         = express();
 var http        = require('http').Server(app);
@@ -10,6 +11,7 @@ var bodyParser  = require('body-parser');
 var session     = require('express-session');
 var cookies     = require('cookie-parser');
 var csrf        = require('csurf');
+var morgan      = require('morgan');
 var dbal        = require('./lib/dbal-mysql/src/middleware');
 
 // Configuration
@@ -20,7 +22,11 @@ app.set('view engine', 'jade');
 // Middleware
 // ---------------------------------------------------------------------------
 app.use('/assets', express.static('frontend/build'));
-app.use(bodyParser.urlencoded({extended: true}));
+// Set up HTTP logger
+var accessLogStream = fs.createWriteStream(__dirname + '/log/access.log', { flags: 'a' });
+app.use(morgan('combined', { stream: accessLogStream }));
+// Body parser
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(session({
   resave: true,

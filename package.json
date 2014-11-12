@@ -10,6 +10,7 @@
     "express": "^4.7.2",
     "express-session": "^1.7.2",
     "jade": "^1.5.0",
+    "morgan": "^1.5.0",
     "mysql": "^2.4.1",
     "node-uuid": "^1.4.1",
     "q": "^1.0.1",

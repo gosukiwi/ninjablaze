@@ -15,13 +15,15 @@ How to hack on Ninja Blaze:
 
 ## TODO
 
+ * Add more jutsu info in view panel
+ * Implement trapped state, jutsu range and conditional jutsus (works only if trapped, or if the enemy used an x type jutsu, etc).
  * Turn timer, 1 minute seems fair for now
  * Homepage, with current games going on and stuff
  * Elemental damage?
  * More jutsus
  * Let users choose jutsus
  * Add OPTIONS button in game page, like hearthstone, so you can quit and stuff
- * Add logging, mostly for the server events
  * Add something like Dodge? More mechanics, add a beforeturn action for venom procs and such.
  * Create some kind of configuration file
  * Emotes, like in Hearthstone
+ * Add custom logger to log duel events, especially errors and such
