@@ -115,6 +115,11 @@ define([
         jutsu.name + ' for ' + state[state.second].damageTaken + ' damage';
       app.layout.trigger('ui/log-message', { type: 'normal', message: message });
 
+      if(state[state.second].effectDamage > 0) {
+        app.layout.trigger('ui/log-message', { type: 'normal', message: 
+          secondPlayer.get('user') + ' takes extra ' + state[state.second].effectDamage + ' poison damage' });
+      }
+
       if(state.first === app.player) {
         app.user.set('currentHP', playerstate.currentHP);
       } else {
@@ -134,11 +139,6 @@ define([
       if(state[state.first].effectDamage > 0) {
         app.layout.trigger('ui/log-message', { type: 'normal', message: 
           firstPlayer.get('user') + ' takes extra ' + state[state.first].effectDamage + ' poison damage' });
-      }
-
-      if(state[state.second].effectDamage > 0) {
-        app.layout.trigger('ui/log-message', { type: 'normal', message: 
-          secondPlayer.get('user') + ' takes extra ' + state[state.second].effectDamage + ' poison damage' });
       }
 
       if(state.second === app.player) {
