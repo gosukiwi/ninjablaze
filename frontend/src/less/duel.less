@@ -1,4 +1,14 @@
 /* scenes */
+.loader {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 3000;
+}
+
 .duel {
   background: url('../img/bg-play.jpg') no-repeat 0 0;
   background-size: cover;
@@ -37,6 +47,17 @@
   position: relative;
   height: 142px;
   padding: 10px;
+
+  .enemy-avatar {
+    .seal {
+      top: 25px;
+    }
+
+    .user-avatar {
+      top: 45px;
+      z-index: 4000;
+    }
+  }
 
   .hp {
     position: relative; // always on top, overrides the &:before

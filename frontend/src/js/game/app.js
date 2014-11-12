@@ -12,6 +12,7 @@ define([
       'views/hp-view', 
       'views/jutsu-view',
       'views/log-view',
+      'views/loading-view',
       'models/user',
       'collections/log-messages',
       'animations/attack'
@@ -26,6 +27,7 @@ define([
       HPView, 
       JutsuView, 
       LogView,
+      LoadingView,
       User,
       LogMessages,
       attackAnimation
@@ -75,6 +77,8 @@ define([
       } else {
         app.layout.trigger('ui/wait-turn');
       }
+
+      app.layout.trigger('ui/loaded');
     });
   }
 
@@ -105,9 +109,11 @@ define([
     var firstPlayer  = getUserFromNumber(state.first);
     var secondPlayer = getUserFromNumber(state.second);
 
-    // TODO: Remove this
-    // Test animation for attack
-    attackAnimation($('#local-avatar'), $('#remote-avatar'))
+    // animation for attack
+    var firstAvatar  = state.first === app.player ? '#local-avatar' : '#remote-avatar';
+    var secondAvatar = firstAvatar === '#local-avatar' ? '#remote-avatar' : '#local-avatar';
+
+    attackAnimation($(firstAvatar), $(secondAvatar))
     .then(function () {
       // Add log messages
       var jutsu = state[state.first].jutsuUsed;
@@ -127,7 +133,7 @@ define([
       }
 
       // Send next animation
-      return attackAnimation($('#remote-avatar'), $('#local-avatar'));
+      return attackAnimation($(secondAvatar), $(firstAvatar));
     })
     .then(function () {
       // Add log messages
@@ -193,6 +199,10 @@ define([
     // When the game is ready, a websocket event will be triggered to render the
     // views, this function will be used to initialize them.
     initViews: function () {
+      this.layout.add(LoadingView, {
+        el: '.loader'
+      });
+
       this.layout.add(JutsuView, {
         el: '#info-panel',
         model: new Backbone.Model({})
