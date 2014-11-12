@@ -8,6 +8,6 @@ Of course everybody is welcome to see this documentation if they so please.
 # Index
 
  * [Server setup](setup.md)
- * [Damage calculations](damage-calculation.md)
+ * [Mechanics](mechanics.md)
  * [Jutsus](jutsus.md)
  * [Leveling Up](leveling-up.md)
