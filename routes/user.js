@@ -147,7 +147,7 @@ router.get('/users/:id', function (req, res) {
         description: 'Throws a poisonous kunai',
         effect_type: 'poison',
         effect_duration: 2,
-        effect_damage: 20,
+        effect_damage: 100,
       },
       {
         name: 'Throw Kunai',

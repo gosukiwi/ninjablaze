@@ -44,6 +44,8 @@ var Mechanics = {
 
   // Updates the effects for a turn and apply new ones, returns damage taken
   // this turn by effects.
+  // IMPORTANT: Effect damage is flat damage, so armor and scaling doesn't
+  // matter.
   updateEffects: function (effects, jutsu) {
     var damageTaken = 0;
 

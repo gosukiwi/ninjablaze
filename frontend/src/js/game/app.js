@@ -110,7 +110,9 @@ define([
     attackAnimation($('#local-avatar'), $('#remote-avatar'))
     .then(function () {
       // Add log messages
-      var message = firstPlayer.get('user') + ' attacked with ' + state[state.first].jutsuUsed.name;
+      var jutsu = state[state.first].jutsuUsed;
+      var message = firstPlayer.get('user') + ' attacked with ' + 
+        jutsu.name + ' for ' + state[state.second].damageTaken + ' damage';
       app.layout.trigger('ui/log-message', { type: 'normal', message: message });
 
       if(state.first === app.player) {
@@ -124,8 +126,20 @@ define([
     })
     .then(function () {
       // Add log messages
-      var message = secondPlayer.get('user') + ' attacked with ' + state[state.second].jutsuUsed.name;
+      var jutsu = state[state.second].jutsuUsed;
+      var message = secondPlayer.get('user') + ' attacked with ' + 
+        jutsu.name + ' for ' + state[state.first].damageTaken + ' damage';
       app.layout.trigger('ui/log-message', { type: 'normal', message: message });
+
+      if(state[state.first].effectDamage > 0) {
+        app.layout.trigger('ui/log-message', { type: 'normal', message: 
+          firstPlayer.get('user') + ' takes extra ' + state[state.first].effectDamage + ' poison damage' });
+      }
+
+      if(state[state.second].effectDamage > 0) {
+        app.layout.trigger('ui/log-message', { type: 'normal', message: 
+          secondPlayer.get('user') + ' takes extra ' + state[state.second].effectDamage + ' poison damage' });
+      }
 
       if(state.second === app.player) {
         app.user.set('currentHP', playerstate.currentHP);
