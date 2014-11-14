@@ -48,6 +48,7 @@ var userRouter  = require('./routes/user');
 var lobbyRouter = require('./routes/lobby');
 var gameRouter  = require('./routes/game');
 var jutsuRouter = require('./routes/jutsu');
+var mapRouter   = require('./routes/map');
 
 app.get('/', function(req, res){
   res.render('index');
@@ -57,6 +58,7 @@ app.use('/', lobbyRouter);
 app.use('/', gameRouter);
 app.use('/', userRouter);
 app.use('/', jutsuRouter);
+app.use('/', mapRouter);
 
 // Websockets
 // Eventually they could go into their own node instance if needed.

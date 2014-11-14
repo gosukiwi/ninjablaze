@@ -27,3 +27,12 @@ How to hack on Ninja Blaze:
  * Create some kind of configuration file
  * Emotes, like in Hearthstone
  * Add custom logger to log duel events, especially errors and such
+
+# Techs used
+ * Node
+ * Express + Jade
+ * Backbone (jQuery, Underscore)
+ * Less
+ * Gulp
+ * Git
+ * Bower
