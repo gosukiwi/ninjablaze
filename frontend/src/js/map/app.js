@@ -1,68 +1,53 @@
-/**
- * Main map app
- */
-define(['jquery', 'underscore'], function ($, _) {
+define([
+    'map',
+    'websockets',
+    'helpers/layout',
+    'collections/npcs',
+    'models/npc',
+    'views/npcs-view',
+    'views/dialog-view',
+  ], 
+  function (
+    map,
+    webSockets,
+    Layout,
+    Npcs,
+    Npc,
+    NpcsView,
+    DialogView
+) {
   'use strict';
 
-  var $map;
-  var $cursor;
-  var $player;
-  var playerPosition = [4, 4];
-  var cursorWidth;
-  var cursorHeight;
-
-  $(window).resize(_.debounce(function () {
-    init();
-  }, 300));
-
-  function moveCursor(e) {
-    var left   = (Math.ceil(e.clientX / cursorWidth) - 1);
-    var top    = (Math.ceil(e.clientY / cursorHeight) - 1);
-    $cursor.css({ left: left * cursorWidth + 'px', top: top * cursorHeight + 'px' });
-
-    if(Math.abs(left - playerPosition[0]) > 1 || Math.abs(top - playerPosition[1]) > 1) {
-      $cursor.addClass('is-invalid');
-    } else {
-      $cursor.removeClass('is-invalid');
-    }
-  }
-
-  function moveTo(e) {
-    var left   = (Math.ceil(e.clientX / cursorWidth) - 1);
-    var top    = (Math.ceil(e.clientY / cursorHeight) - 1);
-
-    // Is it a valid position?
-    if(Math.abs(left - playerPosition[0]) > 1 || Math.abs(top - playerPosition[1]) > 1) {
-      return;
-    }
-
-    playerPosition = [left, top];
-    drawPlayer();
-  }
-
-  function drawPlayer() {
-    var x = playerPosition[0];
-    var y = playerPosition[1];
-    $player.css({ 
-      left: x * cursorWidth + (cursorWidth / 2) - ($player.width() / 2) + 'px',
-      top:  y * cursorHeight + (cursorHeight / 2) - ($player.height() / 2) + 'px',
-    });
-  }
-
-  function init() {
-    $map         = $('.map');
-    $cursor      = $('.cursor');
-    $player      = $('.player');
-    cursorWidth  = $cursor.width();
-    cursorHeight = $cursor.height();
-
-    $map
-      .on('mousemove', _.throttle(moveCursor, 100))
-      .on('click', moveTo);
-    drawPlayer(playerPosition[0], playerPosition[1]);
-  }
-
   return {
-    initialize: init,
+
+    initialize: function () {
+      this.layout = new Layout();
+      this.initViews();
+
+      map.initialize();
+      webSockets.initialize(this.layout);
+
+      // initialize
+      this.layout.trigger('ui/get-npcs', map.position());
+    },
+
+    initViews: function () {
+      console.log('init views');
+      
+      var npcs = new Npcs();
+
+      this.layout.add(NpcsView, { 
+        el: '#npc-list',
+        collection: npcs,
+      });
+
+      this.layout.add(DialogView, {
+        el: '.dialog',
+        model: new Npc({ name: 'none' }),
+      });
+
+      this.layout.render();
+    },
+
   };
 });

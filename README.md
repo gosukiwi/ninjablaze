@@ -36,3 +36,4 @@ How to hack on Ninja Blaze:
  * Gulp
  * Git
  * Bower
+ * nginx + mysql

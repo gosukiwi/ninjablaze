@@ -9,6 +9,8 @@ require.config({
     'jquery': '../../vendor/jquery/dist/jquery',
     'backbone': '../../vendor/backbone/backbone',
     'underscore': '../../vendor/lodash/dist/lodash.underscore',
+    'io': '/socket.io/socket.io.js',
+    'helpers': '../helpers/',
   }
 });
 
